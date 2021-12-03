@@ -1,2 +1,2 @@
-# Tatvasoft -Trainning Program 
+# Tatvasoft -Training Program 
 # Project-helperland
