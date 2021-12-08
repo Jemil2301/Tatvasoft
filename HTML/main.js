@@ -23,6 +23,7 @@ window.onscroll = function () {
 }
 
 
+
 $(document).ready(function() {
   console.log('welcome to jquery')
   $('.close').on('click', function(){
@@ -47,4 +48,3 @@ details.forEach((targetDetail) => {
     });
   });
 });
-

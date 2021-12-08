@@ -331,7 +331,7 @@ height: 130px;
 	 transition: transform 250ms;
 }
 .sec-banner-Homepage-flex div img:hover{
-	transform: translateY(-10px)
+	transform: translateY(-10px);
 }
 .sec-banner-Homepage-flex div h3{
 	color: #565656;
@@ -359,6 +359,22 @@ height: 130px;
   text-align: center;
   color: #565656;
   margin-bottom: 156px;
+}
+
+.combinesection{
+	position: relative;
+}
+.combinesection .leftimg{
+	position:absolute;
+	left: 0;
+	bottom: -1rem;
+	z-index: -1;
+}
+.combinesection .rightimg{
+	position:absolute; 
+	right: 0; 
+	bottom: -1rem; 
+	z-index: -1;
 }
 
 .third-banner-Homepage-flex1{
@@ -842,7 +858,7 @@ hr{
 	grid-auto-flow: column;
 	justify-items: center;
 	justify-content: center;
-	margin-bottom: 34px;
+	padding-bottom: 34px;
 }
 .faqlogo img{
 	width: 24px;
@@ -968,6 +984,371 @@ details[open]>summary::before {
 	padding-top: 27px;
 }
 
+/* Price page*/
+.price-img img{
+	width: 100%;
+	height: 370px;
+	margin-top: 64px;
+}
+
+.price-table
+{
+	display: flex;
+	justify-content: center;
+}
+
+.price-table  div h2{
+	color: white;
+	width: 553px;
+	padding-bottom: 20px;
+	font-size: 28px;
+	text-align: center;
+	padding-top: 18px;
+	font-family: 'Roboto',bold;
+	background-color: #1d7a8c;
+}
+
+.price-table div .hedingtable h3{
+	color: #646464;
+	font-size: 48px;
+	text-align: center;
+	margin-top: 18px;
+	font-family: 'Roboto',bold;
+
+}
+.price-table div .hedingtable{
+	display: flex;
+	border: 0px;
+	justify-content: center;
+	margin-bottom: 0px;
+
+}
+.price-table div .hedingtable span{
+	padding-top: 10px;
+	color: #646464;
+	font-size: 30px;
+	text-align: center;
+	margin-top: 18px;
+	font-family: 'Roboto',sans-serif;
+
+}
+.price-table  ul{
+	padding-top: 27px;
+	padding-bottom: 34px;
+	padding-left: 40%;	
+
+}
+.price-table  ul li{
+	
+	list-style: none;
+	list-style-image: url('./img/forma-1.png');
+	vertical-align: middle;
+
+}
+.price-table div{
+	border: 1px solid #1d7a8c;
+	margin-bottom: 51px;
+}
+.price-table {
+	border-bottom: 1px solid #dcdcdc;
+	width: 80%;
+	
+}
+
+.price-extraservice{
+	display: flex;
+	justify-content: center;
+}
+
+
+.price-extraservice .flex{
+	display: flex;
+}
+
+.price-extraservice .flex .flex1{
+	margin-left: 54.5px;
+	margin-right: 54.5px;
+	display: table-cell;
+	text-align: center;
+}
+.price-extraservice .flex .flex1 div{
+	width: 108px;
+	height: 108px;	
+	border: 1px solid #B0C9CE;
+	border-radius: 180px;
+	display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  margin-bottom: 14px;
+  transition: transform 250ms;
+
+}
+.price-extraservice .flex .flex1 div:hover{
+	background-color: #B0C9CE;
+
+transform: translateY(-10px);
+}
+.price-extraservice .flex .flex1 p{
+	color: #646464;
+	font-size: 16px;
+		font-family: 'Roboto',sans-serif;
+
+
+}
+.price-extraservice .flex .flex1 span{
+	color: #1D7A8C;
+	font-family: 'Roboto',bold;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.price-hedding-page2{
+	background-color: #f6f6f6;
+}
+
+.price-page2-details{
+	display: flex;
+	justify-content: center;
+	background-color: #f6f6f6;
+}
+
+
+
+.price-page2-details div{
+	padding-left: 15.56px;
+	padding-right: 15.56px;
+}
+.price-page2-details div p{
+	color: #4F4F4F;
+	font-family: 'Roboto',bold;
+	font-weight: bold;
+	font-size: 20px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+
+}
+
+.price-page2-details div ul{
+	
+	padding-bottom: 81px;
+	padding-left: 0px;
+	
+}
+.price-page2-details div ul li{
+	
+	list-style: none;
+	/*list-style-image: url('./img/side.png');*/
+	background: url('./img/side.png') left center no-repeat;
+	padding-left: 30px;
+	line-height: 2.25; 
+	color: #4F4F4F;
+	font-size: 16px;
+	font-family: 'Roboto',sans-serif;
+
+
+}
+.price-page2-details div img{
+	width: 360px;
+	height: 210px;
+	transition: transform .2s;
+}
+.price-page2-details div img:hover{
+	 -ms-transform: scale(1.1); /* IE 9 */
+  -webkit-transform: scale(1.1); /* Safari 3-8 */
+  transform: scale(1.1);
+}
+ 
+.price-page3-details{
+	display: flex;
+	justify-content: center;
+	padding-bottom: 79px;
+
+
+}
+.price-page3-details .prices3_2 img{
+	width: 329px;
+	height: 236px;
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+	
+}
+.price-page3-details .prices3_2 img:hover{
+	-webkit-filter: sepia(100%);
+	filter: sepia(100%);
+}
+.price-page3-details .prices3_1 div{
+	margin-right: 47px;
+}
+.price-page3-details .prices3_3 div{
+	padding-left:100px;
+}
+.price-page3-details .prices3_1 div h5{
+
+font-family: 'Roboto';
+  font-size: 20px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-align: right;
+  color: #646464;
+}
+.price-page3-details .prices3_3 div h5{
+font-family: 'Roboto';
+  font-size: 20px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-align: left;
+  color: #646464;
+}
+.price-page3-details .prices3_1 div p{
+	
+	color: #646464;
+	font-family: 'Roboto',sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.43;
+  letter-spacing: normal;
+  text-align: right;
+
+}
+.price-page3-details .prices3_3 div p{
+  
+	color: #646464;
+	font-family: 'Roboto',sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.43;
+  letter-spacing: normal;
+  text-align: left;
+}
+.scrolltop2{
+	display: block;
+	position: fixed;
+	width: 48px;
+  height: 48px;
+  border-radius: 180px;
+  padding: 10px 14px 20px;
+  background-color: #525252;
+  bottom: 76px;
+  left: 70px;
+  opacity: 0.6;
+}
+
+.messageme2{
+	display: block;
+	position: fixed;
+	width: 63px;
+	height: 63px;
+	right: 70px;
+	bottom: 76px;
+}
+
+
+
+
+
+
+/*Contact us page*/
+
+.Contactus-page1{
+	display: flex;
+	justify-content: center;
+	border-bottom: 1px solid #E1E1E1;
+	width: 80%;
+	
+	text-align: center;
+}
+.Contactus-page1 div{
+	width: 237.27px;
+	margin-left:71.36px ;
+	margin-right: 71.36px;
+	margin-bottom: 48px;
+}
+.Contactus-page1 div p{
+	margin-top: 20.9px;
+	color: #4F4F4F;
+	font-size: 16px;
+	font-family: 'Roboto',sans-serif;
+}
+.Contactus-page1 div img{
+	border: 0px solid white;
+	transition: transform .3s;
+}
+.Contactus-page1 div img:hover{
+
+-ms-transform: scale(1.3); /* IE 9 */
+  -webkit-transform: scale(1.3); /* Safari 3-8 */
+  transform: scale(1.3);
+
+}
+
+
+.Contactus-page2{
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+.Contactus-page2 .row{
+justify-content: center;
+align-items: center;
+}
+.Contactus-page2 h3{
+	margin-top: 74px;
+	margin-bottom: 23px;
+	color: #4F4F4F;
+	font-family: 'Roboto';
+	font-weight: bold;
+	font-size: 28px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -999,7 +1380,6 @@ details[open]>summary::before {
 			height: auto;
 	}
 }
-
 
 @media(max-width: 1309px){
 	footer{
@@ -1054,6 +1434,9 @@ footer .ftlogo{
 		margin-right: auto;
 	}
 	.faq-img img{
+		margin-top: 100px;
+	}
+	.price-img img{
 		margin-top: 100px;
 	}
 
@@ -1128,11 +1511,71 @@ footer .ftlogo{
 	
 }
 
+.price-extraservice .flex {
+	display: inline;
+	justify-content: center;
+	text-align: center;
+}
+	.price-extraservice .flex .flex1{
+		display: inline-block;
+	}
+	.price-page3-details{
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+		.price-page3-details .prices3_1 div h5 {
+			text-align: center;
+	}
+		.price-page3-details .prices3_3 div h5 {
+			text-align: center;
+	}
+		.price-page3-details .prices3_1 div p {
+			text-align: center;
+	}
+		.price-page3-details .prices3_3 div p {
+			text-align: center;
+	}
+	.price-page3-details .prices3_1 div{
+		padding-right: 0px;
+	}
+		.price-page3-details .prices3_3 div{
+		padding-left: 0px;
+	}
+	.price-page3-details .prices3_2 img{
+		width: 95%;
+	}
 
-
-
-
-
+	.Contactus-page1{
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	
+}
+@media(max-width: 1187px){
+	.price-page2-details{
+		margin: 0px;
+		padding: 0px;
+		background-color: #f6f6f6;
+		flex-direction: 	column;
+		justify-content: center;
+		align-items: center;
+	}
+	.price-page2-details div{
+		background-color: #f6f6f6;
+		padding-left: auto;
+		padding-right: auto;
+		padding-bottom: 0px;
+		margin: 0px;
+	}
+	.price-page2-details div ul{
+		margin-bottom: 0px;
+	}
+	.price-page2-details div img{
+		width: 100%;
+		
+	}
 }
 @media (max-width: 1157px){
 	.sec-banner-Homepage-flex{
@@ -1186,6 +1629,7 @@ display: flex;
 }
 
 
+
 }
 @media (max-width: 576px){
 
@@ -1197,3 +1641,9 @@ display: flex;
 
 
 }
+@media (max-width: 552px){
+	.price-table  div h2{
+		width: 100%
+
+}
+
