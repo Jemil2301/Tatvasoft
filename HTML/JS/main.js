@@ -31,7 +31,17 @@ $(document).ready(function() {
       console.log($(this).closest('.Privacypolicy'))
       // hide this selected element
       $(this).closest('.Privacypolicy').hide()
+  });
+
+
+  $(".cancle").click(function () {
+    $(this).text('cancled').css("background-color", "#c24c4c")
+    
   }); 
+
+  $(".first-2").click(function(){
+    $(".first-2 .num").css("display","none")
+  });
 });
 
 
@@ -48,3 +58,5 @@ details.forEach((targetDetail) => {
     });
   });
 });
+
+
