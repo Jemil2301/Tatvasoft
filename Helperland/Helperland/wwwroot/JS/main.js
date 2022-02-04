@@ -1,4 +1,5 @@
-let nav =document.querySelector(".navigation-wrap")
+
+let nav = document.querySelector(".navigation-wrap")
 
 window.onscroll = function () {
   if(window.matchMedia('(min-width: 993px)').matches && document.documentElement.scrollTop >20){

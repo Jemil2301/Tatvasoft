@@ -1,0 +1,126 @@
+﻿@model Helperland.Models.RegisterModel
+
+@{
+    ViewBag.Title = "Become a Helper";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="top-banner-Become-a-helper container-fluid" id="top">
+    <div class="Become-a-helper-RegisterNow">
+        <h2>Register Now!</h2>
+        <form asp-action="BecomeaHelper" asp-controller="Home">
+            <input asp-for="FirstName" class="form-control" placeholder="First name">
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+            <input asp-for="LastName" class="form-control" placeholder="Last name">
+            <span asp-validation-for="LastName" class="text-danger"></span>
+            <input asp-for="Email" class="form-control" placeholder="Email Address">
+            <span asp-validation-for="Email" class="text-danger"></span>
+            <div class="input-group">
+                <div class="input-group-text">+91</div>
+                <input asp-for="Mobile" type="tel" class="form-control" id="specificSizeInputGroupUsername" placeholder="Mobile Number">
+            </div>
+            <span asp-validation-for="Mobile" class="text-danger"></span>
+            <input asp-for="Password" class="form-control" placeholder="Password">
+            <span asp-validation-for="Password" class="text-danger"></span>
+            <input asp-for="Confirmpwd" class="form-control" placeholder="Confirm Password">
+            <span asp-validation-for="Confirmpwd" class="text-danger"></span>
+
+            <div class="form-check">
+                <input asp-for="privacy" class="form-check-input" type="checkbox"  id="defaultCheck1" required>
+                <label class="form-check-label" for="defaultCheck1">
+                    I accept<a href="#"> terms and conditions</a> & <a href="#">privacy policy</a>
+                </label>
+            </div>
+            <span asp-validation-for="privacy" class="text-danger"></span>
+
+            <div class="Register">
+                <button type="submit">Get Started  <img src="~/img/arrow(1).png"></button>
+            </div>
+        </form>
+
+    </div>
+    <div class="scrollarrow_become_Helper"><a href="#sec"><img src="~/img/group-18_5.png"></a></div>
+</section>
+<section class="Become-a-helper-how-it-work container-fluid" id="sec">
+    <div class="combinesection2">
+
+        <div class="leftimg2">
+            <img src="~/img/blog-left-bg.png">
+        </div>
+        <h2>How it works</h2>
+        <section>
+            <div class="leftside">
+                <h3>Register yourself</h3>
+                <p>Provide your basic information to register<br>yourself as a service provider.</p>
+                <a href="#">Read more <img src="~/img/shape-2.png"></a>
+            </div>
+            <div class="imglogo">
+                <img src="~/img/group-18(2).png">
+            </div>
+
+        </section>
+
+
+
+        <section class="reverce">
+            <div class="leftside imglogo">
+                <img src="~/img/group-18(3).png">
+            </div>
+            <div>
+                <h3>Get service requests</h3>
+                <p>You will get service requests from<br>customes depend on service area and profile.</p>
+                <a href="#">Read more <img src="~/img/shape-2.png"></a>
+            </div>
+        </section>
+
+
+        <section>
+            <div class="leftside">
+                <h3>Complete service</h3>
+                <p>Accept service requests from your customers<br> and complete your work.</p>
+                <a href="#">Read more <img src="~/img/shape-2.png"></a>
+            </div>
+            <div class="imglogo">
+                <img src="~/img/group-18(4).png">
+            </div>
+        </section>
+
+
+
+
+
+        <div class="rightimg2">
+            <img src="~/img/blog-right-bg.png">
+        </div>
+    </div>
+
+</section>
+<div class="email">
+    <h3>GET OUR NEWSLETTER</h3>
+    <input type="text" placeholder="YOUR EMAIL" name="Mail">
+    <button>Submit</button>
+</div>
+
+<footer>
+    <div class="ftlogo">
+        <img src="~/img/logo.png">
+    </div>
+
+
+    <div class="ftlink">
+        <a asp-controller="home" asp-action="index">HOME</a>
+        <a asp-controller="home" asp-action="Aboutus">ABOUT</a>
+        <a href="#">TESTIMONIALS</a>
+        <a asp-controller="home" asp-action="Faq">FAQS</a>
+        <a href="#">INSURANCE POLICY</a>
+        <a href="#">IMPRESSUM</a>
+    </div>
+
+
+    <div class="ftsocial">
+
+        <img class="img1" src="~/img/ic-facebook.png">
+        <img class="img2" src="~/img/ic-instagram.png">
+    </div>
+
+</footer>
+<script type="text/javascript" src="~/JS/main.js"></script>

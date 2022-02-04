@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Helperland.Models.ContactusModel
+@{
     ViewBag.Title = "Contact us";
     //Layout = "~/Views/Shared/_Layout1.cshtml";
 }
@@ -36,13 +37,26 @@
 
 <section class="container-fluid Contactus-page2">
     <h3>Get in touch with us</h3>
-    <form method="post">
+    <div class="row formrow1">
+        <div class="sucess col-lg-5" style="justify-content:center;
+       align-items:center; color: #3c763d; background-color: #dff0d8;
+       border-color: #d6e9c6; padding: 15px; margin-bottom: 20px; border: 1px solid transparent;
+       border-radius: 4px; display:none;" id="_sucess"><span class="close" onclick="document.getElementById('_sucess').style.display='none';">x</span>
+            Your query has been submitted successfully. Our helpdesk team will contact you soon!
+            
+
+        </div>
+
+    </div>
+    <form enctype="multipart/form-data" method="post" asp-action="Contactus" asp-controller="Home">
         <div class="row formrow1">
             <div class="col-lg-3">
-                <input type="text" class="form-control" placeholder="First name" aria-label="First name">
+                <input asp-for="FirstName" class="form-control" placeholder="First name" aria-label="First name">
+                <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="col-lg-3">
-                <input type="text" class="form-control" placeholder="Last name" aria-label="Last name">
+                <input asp-for="LastName" class="form-control" placeholder="Last name" aria-label="Last name">
+                <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
         </div>
 
@@ -51,29 +65,54 @@
                 <label class="visually-hidden" for="specificSizeInputGroupUsername">Username</label>
                 <div class="input-group">
                     <div class="input-group-text">+91</div>
-                    <input type="tel" class="form-control" id="specificSizeInputGroupUsername" placeholder="Mobile Number">
+                    <input asp-for="PhoneNumber" class="form-control" id="specificSizeInputGroupUsername" placeholder="Mobile Number">
+
                 </div>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="col-lg-3">
-                <input type="email" class="form-control" placeholder="Email Address" aria-label="Last name">
+                <input asp-for="Email" class="form-control" placeholder="Email Address" aria-label="Last name">
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="row formrow3">
                 <div class="col-lg-5">
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>Subject</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <select asp-for="Subject" class="form-select" aria-label="Default select example">
+
+                        <option value="General" selected>General</option>
+                        <option value="Inquiry">Inquiry</option>
+                        <option value="Renewal">Renewal</option>
+                        <option value="Revocation">Revocation</option>
                     </select>
                 </div>
             </div>
             <div class="row formrow4">
                 <div class="col-lg-5">
-                    <textarea placeholder="Message"></textarea>
+                    <textarea asp-for="Message" placeholder="Message"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
                 </div>
 
             </div>
-            <div class="submit formrow5">
+            <div class="attachmentlabel col-lg-5">Attachment</div>
+            <div class="row">
+                
+                <div class="form-group col-lg-5">
+                    <div class="custom-file">
+                        <input asp-for="attachment" type="file" class="fileupload custom-file-input form-control" id="customFile">
+                    </div>
+
+                </div>
+            </div>
+            <div class="checkbox col-lg-5">
+                <label>
+                    <input formcontrolname="Privacy policy" asp-for="privacy" type="checkbox" class="checkboxinput ng-untouched ng-pristine ng-valid" required>
+                    <span style="text-align:left;">
+                        Our current ones apply privacy policy. I hereby agree that my data entered into the contact form will be stored electronically and processed and used for the purpose of establishing contact. The consent can be withdrawn at any time pursuant to Art. 7 (3) GDPR by informal notification (eg by e-mail).
+                    </span>
+                    <span asp-validation-for="privacy" class="text-danger"></span>
+                </label>
+            </div>
+
+            <div class="submit formrow5" style="text-align:center;">
                 <button type="submit">Submit</button>
             </div>
 
@@ -90,4 +129,10 @@
     <input type="text" placeholder="YOUR EMAIL" name="Mail">
     <button>Submit</button>
 </div>
+<script type="text/javascript" src="~/JS/main.js"></script>
+@if (ViewBag.Contactussucess != null) {
+<script>
+    document.getElementById('_sucess').style.display = 'block';
+</script>
 
+}

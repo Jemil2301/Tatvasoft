@@ -1,3 +1,5 @@
+
+using Helperland.Models.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +19,14 @@ namespace Helperland
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddDbContext<HelperlandContext>();
+            services.AddDistributedMemoryCache();
+            services.AddSession(option =>
+            {
+                option.IdleTimeout = TimeSpan.FromHours(2);
+            });
+            services.AddHttpContextAccessor();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -29,6 +39,16 @@ namespace Helperland
 
             app.UseStaticFiles();
             app.UseMvc();
+            app.UseRouting();
+            app.UseSession();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

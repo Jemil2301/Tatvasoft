@@ -25,7 +25,7 @@
 		font-family: 'Roboto', sans-serif;
 	}
 	.main-btn2{
-		  background: transparent;
+		 background: transparent;
 		border: 1px solid #FFFFFF80;
 		border-radius: 20px;
 		opacity: 1;
@@ -38,6 +38,13 @@
 		margin-right: 22px;
 		font-family: 'Roboto', sans-serif;
 	}
+		.main-btn2 a {
+			text-decoration: none;
+			color: white;
+		}
+			.main-btn2 a:hover {
+				color: #006072;
+			}
 	.navbar-brand{
 	margin-top: 10px;
 	margin-left: 17px;
@@ -1297,7 +1304,7 @@
 	.Contactus-page2{
 		justify-content: center;
 		align-items: center;
-		text-align: center;
+		
 	}
 	.Contactus-page2 .row{
 	justify-content: center;
@@ -1310,6 +1317,7 @@
 		font-family: 'Roboto';
 		font-weight: bold;
 		font-size: 28px;
+		text-align:center;
 	}
 
 	.formrow1 .col-lg-3 {
@@ -1354,7 +1362,6 @@
 		border: 1px solid #C8C8C8;
 		border-radius: 4px;
 		margin-top: 15px;
-		
 		width: 580px; 
 		height: 146px;
 		padding: 0px;
@@ -1367,8 +1374,52 @@
 		border: 0px;
 		color: #A0A0A0;
 	}
+	.fileupload {
 
-	.map{
+		border:0px;
+
+	
+	}
+
+.attachmentlabel {
+	color: #646464;
+	font-size: 18px;
+	font-family: 'Roboto',sans-serif;
+	font-weight: bold;
+	margin-top: 27px;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+	visibility: hidden;
+	margin-bottom:10px;
+}
+
+
+.custom-file-input::before {
+	content: 'Upload';
+	display: inline-block;
+	background: white;
+	color:#666666;
+	border: 1px solid #646464;
+	border-radius: 50px;
+	padding: 10px 15px;
+	outline: none;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	cursor: pointer;
+	font-size: 16px;
+	font-family:'Roboto',sans-serif;
+}
+
+.custom-file-input:hover::before {
+	border-color: black;
+}
+
+.custom-file-input:active::before {
+	background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+	.map {
 		margin-bottom: 43.01px;
 	}
 
@@ -1425,20 +1476,25 @@
 	  text-align: center;
 	  color: #4f4f4f;
 	}
-
-	.Become-a-helper-RegisterNow input[type=text] {
-		width: 359px;
-		height: 46px;
-		border: solid 1px #c8c8c8;
-		margin: auto;
-		margin-bottom: 15px;
-	}
+.Become-a-helper-RegisterNow form .text-danger {
+	margin-left:35px;
+	margin-top:0px;
+	line-height:normal;
+	margin-bottom:15px;
+}
+.Become-a-helper-RegisterNow input[type=text] {
+	width: 359px;
+	height: 46px;
+	border: solid 1px #c8c8c8;
+	margin: auto;
+	
+}
 	.Become-a-helper-RegisterNow input[type=password] {
 		width: 359px;
 		height: 46px;
 		border: solid 1px #c8c8c8;
 		margin: auto;
-		margin-bottom: 15px;
+		
 	}
 
 	.Become-a-helper-RegisterNow input[type=email] {
@@ -1446,13 +1502,13 @@
 		height: 46px;
 		border: solid 1px #c8c8c8;
 		margin: auto;
-		margin-bottom: 15px;
+		
 	}
 	.Become-a-helper-RegisterNow .input-group{
 		width: 359px;
 		height: 46px;
 		margin: auto;
-		margin-bottom: 15px;
+		
 	}
 
 
@@ -1460,7 +1516,7 @@
 		width: 359px;
 		margin-left: auto;
 		margin-right: auto;
-		margin-bottom:15px;
+		
 		font-family: 'Roboto';
 	  font-size: 16px;
 	  font-weight: normal;
@@ -2258,6 +2314,7 @@ table.dataTable.no-footer {
 }
 
 
+/*login block*/
 
 
 
@@ -2267,6 +2324,25 @@ table.dataTable.no-footer {
 
 
 
+
+/*createaccount*/
+.createaccountheadding {
+
+margin-top:50px;
+}
+
+.createform {
+text-align:center;
+align-content:center;
+}
+
+.Contactus-page3 {
+align-items:center;
+}
+
+.chbox{
+	margin-top:40px;
+}
 
 
 
@@ -2830,7 +2906,11 @@ table.dataTable.no-footer {
 	  letter-spacing: normal;
 	  text-align: center;  
 	}
-	
+		.popup {
+			margin-top: 65px;
+			width: 95%;
+			height: auto;
+		}
 
 	}
 	@media(max-width: 1187px){
