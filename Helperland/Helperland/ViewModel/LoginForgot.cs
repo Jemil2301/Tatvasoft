@@ -10,5 +10,7 @@ namespace Helperland.ViewModel
     {
         public LoginModel LoginModel { get; set; }
         public ForgotModel ForgotModel { get; set; }
+        public String chceckbookorlogin { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewBag.Title = "Helperland";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,13 +9,22 @@
 
 <section class="top-banner-Homepage" id="top">
     <div class="container-fluid">
-        <h2 class="heading">Lorem ipsum text</h2>
+        <h2 class="heading">Do not feel like<br> housework?</h2>
+
         <ul>
-            <li>Lorem ipsum dolor sit amet, consectetur adipiscing</li>
-            <li>Lorem ipsum dolor sit amet, consectetur adipiscing</li>
-            <li>Lorem ipsum dolor sit amet, consectetur adipiscing</li>
+            <li>certified & insured helper</li>
+            <li>easy booking procedure</li>
+            <li>friendly customer service</li>
+            <li>secure online payment method</li>
         </ul>
-        <div class="btnhome"><button>Let’s Book a Cleaner</button></div>
+        @if (HttpContextAccessor.HttpContext.Session.GetString("FirstName") == null)
+        {
+            <div class="btnhome"><a onclick="chekloginornot()">Let’s Book a Cleaner</a></div>
+        }
+        else
+        {
+            <div class="btnhome"><a asp-controller="Home" asp-action="bookservice">Let’s Book a Cleaner</a></div>
+        }
 
         <div class="row">
             <div class="col-lg-2"><img src="~/img/step-1.png"><br>Enter your postcode</div>
@@ -70,9 +80,10 @@
         <section>
             <div class="container-fluid third-banner-Homepage-flex1">
                 <div class="content">
-                    <div class="heading1"><p>Lorem ipsum dolor sit amet,<br> consectetur</p></div>
+                    <div class="heading1"><p>We do not know what makes you happy,<br>  but ...</p></div>
                     <div class="cont">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nisi sapien, suscipit ut accumsan vitae, pulvinar ac libero.<br><br> Aliquam erat volutpat. Nullam quis ex odio. Nam bibendum cursus purus, vel efficitur urna finibus vitae. Nullam finibus aliquet pharetra. Morbi in sem dolor. Integer pretium hendrerit ante quis vehicula.<br><br> Mauris consequat ornare enim, sed lobortis quam ultrices sed.</p>
+
+                        <p>If it's not dusting off, our friendly helpers will free you from this burden - do not<br> worry anymore about spending valuable time doing housework, but savor life,<br> you're well worth your time with beautiful experiences. Free yourself and enjoy<br> the gained time: Go celebrate, relax, play with your children, meet friends or<br> dare to jump on the bungee.Other leisure ideas and exclusive events can be<br>found in our blog - guaranteed free from dust and cleaning tips!</p>
                     </div>
                 </div>
                 <div>

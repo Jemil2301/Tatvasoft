@@ -20,7 +20,7 @@ namespace Helperland.Controllers
             _logger = logger;
             _db = db;
         }
-
+       
         [HttpPost]
         public ActionResult Login(LoginForgot reg)
         {
@@ -53,14 +53,30 @@ namespace Helperland.Controllers
                     Response.Cookies.Append(key1, value1, options);
                     ViewBag.Rememberme = String.Format("Save");
                 }*/
-                
+                HttpContext.Session.SetInt32("UserTypeId", details.FirstOrDefault().UserTypeId);
                 if (details.FirstOrDefault().UserTypeId == 1)
                 {
                     HttpContext.Session.SetString("FirstName", details.FirstOrDefault().FirstName);
-                    return RedirectToAction("Welcome", "Home");
+                    HttpContext.Session.SetInt32("UserId", details.FirstOrDefault().UserId);
+                    
+                    if (reg.chceckbookorlogin != null)
+                    {
+                        return RedirectToAction("bookservice", "Home");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Welcome", "Home");
+                    }
                 }
                 else 
                 {
+                    if (reg.chceckbookorlogin != null) 
+                    {
+                        ModelState.AddModelError("Invalid", "Only Customer can access this part. ");
+                        ViewBag.Message = String.Format("Invalid Login");
+                        return View("~/Views/Home/Index.cshtml");
+                    }
+
                     if (details.FirstOrDefault().IsApproved) 
                     {
                         HttpContext.Session.SetString("FirstName", details.FirstOrDefault().FirstName);
@@ -77,10 +93,19 @@ namespace Helperland.Controllers
                 
             }
             else
-            { 
-                ModelState.AddModelError("Invalid", "Invalid login");
-                ViewBag.Message = String.Format("Invalid Login");
-                return View("~/Views/Home/Index.cshtml");
+            {
+                if (reg.chceckbookorlogin != null)
+                {
+                    ModelState.AddModelError("Invalid", "Invalid login");
+                    ViewBag.Message1 = String.Format("Invalid Login");
+                    return View("~/Views/Home/Index.cshtml");
+                }
+                else 
+                {
+                    ModelState.AddModelError("Invalid", "Invalid login");
+                    ViewBag.Message = String.Format("Invalid Login");
+                    return View("~/Views/Home/Index.cshtml");
+                }
 
                 
             }
@@ -111,6 +136,8 @@ namespace Helperland.Controllers
             var IsCheck = _db.Users.Where(email => email.Email == eMail).FirstOrDefault();
             return IsCheck != null;
         }
+
+        
 
 
     }

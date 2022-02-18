@@ -1,0 +1,713 @@
+﻿@using Helperland.Models.Data
+@model Helperland.ViewModel.BookServiceModel
+@{
+    ViewBag.Title = "Book Now | Helperland";
+    //Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<div class="book-img ">	<img src="~/img/book-service-banner.jpg"></div>
+<section class="container-fluid faq">
+    <div class="container">
+
+        <h1>
+            Set up your cleaning service
+        </h1>
+        <div class="faqlogo">
+            <hr><img src="~/img/forma-1-copy-5.png"><hr>
+        </div>
+
+    </div>
+</section>
+
+<section class="container setup">
+    <div class="left">
+        <ul class="nav nav-pills mb-3 payment-step" id="pills-tab" role="tablist">
+            <li class=" nav-item book-service-pills step1" role="presentation">
+                <a class=" nav-link  active" id="pills-Setup-Service-tab" data-bs-toggle="pill" data-bs-target="#pills-Setup" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
+                    <span>
+                        <span class="icon"></span>
+                        <span class="text">Setup Service</span>
+                    </span>
+                </a>
+
+            </li>
+
+            <li class="nav-item book-service-pills step2" role="presentation">
+                <a class="nav-link" id="pills-Schedule-Plan-tab" data-bs-target="#pills-Schedule-Plan" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">
+                    <span>
+                        <span class="icon"></span>
+                        <span class="text">Schedule & Plan</span>
+                    </span>
+                </a>
+            </li>
+
+            <li class="nav-item book-service-pills step3" role="presentation">
+                <a class="nav-link" id="pills-Your-Details-tab" data-bs-target="#pills-Your-Details" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">
+                    <span>
+                        <span class="icon"></span>
+                        <span class="text">Your Details</span>
+                    </span>
+                </a>
+            </li>
+            <li class="nav-item book-service-pills step4" role="presentation">
+                <a class="nav-link" id="pills-Make-Payment-tab" data-bs-target="#pills-Make-Payment" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">
+                    <span>
+                        <span class="icon"></span>
+                        <span class="text">Make Payment</span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-Setup" role="tabpanel" aria-labelledby="pills-home-tab">
+                <span class="question">Enter your Postal Code</span>
+                <form asp-action="checkpostalcode">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row">
+                        <div class="col-sm-7 col-md-5">
+                            <input asp-for="zipcodeModel.zipcode" class="postalcode form-control" placeholder="Postal code">
+                            <span asp-validation-for="zipcodeModel.zipcode" class="text-danger"></span>
+                            <div id="txt123"></div>
+                        </div>
+                        <div class="col-sm-5 button-wrapper">
+                            <input type="submit" value="Check Availability" class="postalcodebtn">
+
+                        </div>
+                    </div>
+                </form>
+
+
+
+
+            </div>
+            <div class="tab-pane fade" id="pills-Schedule-Plan" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 ">
+                            <span class="question">When do you need the cleaner?</span>
+                            <div class="form-group calculator-date-time flex-1">
+                                <div class="input-wrapper">
+
+                                    <input asp-for="scheduleandplanModel.date" class="form-control date1" id="txtServiceStartDate" placeholder="DD/MM/YYYY" type="text">
+                                </div>
+
+                                <select asp-for="scheduleandplanModel.time" class="time" id="timeselect" formcontrolname="ServiceTime">
+                                    <option value="08:00 am">8:00</option>
+                                    <option value="08:30 am">8:30</option>
+                                    <option value="09:00 am">9:00</option>
+                                    <option value="09:30 am">9:30</option>
+                                    <option value="10:00 am">10:00</option>
+                                    <option value="10:30 am">10:30</option>
+                                    <option value="11:00 am">11:00</option>
+                                    <option value="11:30 am">11:30</option>
+                                    <option value="12:00 pm">12:00</option>
+                                    <option value="12:30 pm">12:30</option>
+                                    <option value="01:00 pm">13:00</option>
+                                    <option value="01:30 pm">13:30</option>
+                                    <option value="02:00 pm">14:00</option>
+                                    <option value="02:30 pm">14:30</option>
+                                    <option value="03:00 pm">15:00</option>
+                                    <option value="03:30 pm">15:30</option>
+                                    <option value="04:00 pm">16:00</option>
+                                    <option value="04:30 pm">16:30</option>
+                                    <option value="05:00 pm">17:00</option>
+                                    <option value="05:30 pm">17:30</option>
+                                    <option value="06:00 pm">18:00</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <span class="question cleaner-hour-picker">How long do you need your cleaner to stay?</span>
+                            <select class="hours inline cleaner-hours ng-untouched ng-pristine ng-valid" id="totatime" formcontrolname="ServiceHours">
+                                <option value=3 selected>3.0 Hrs</option>
+                                <option value=3.5>3.5 Hrs</option>
+                                <option value=4>4.0 Hrs</option>
+                                <option value=4.5>4.5 Hrs</option>
+                                <option value=5>5.0 Hrs</option>
+                                <option value=5.5>5.5 Hrs</option>
+                                <option value=6>6.0 Hrs</option>
+                                <option value=6.5>6.5 Hrs</option>
+                                <option value=7>7.0 Hrs</option>
+                                <option value=7.5>7.5 Hrs</option>
+                                <option value=8>8.0 Hrs</option>
+                                <option value=8.5>8.5 Hrs</option>
+                                <option value=9>9.0 Hrs</option>
+                                <option value=9.5>9.5 Hrs</option>
+                                <option value=10>10.0 Hrs</option>
+                                <option value=10.5>10.5 Hrs</option>
+                                <option value=11>11.0 Hrs</option>
+                                <option value=11.5>11.5 Hrs</option>
+                                <option value=12>12.0 Hrs</option>
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="hr">
+                    <span class="question">Extra Services</span>
+
+                    <div class="extraservice">
+                        <div class="flex">
+                            <input type="checkbox" asp-for="scheduleandplanModel.one" class="ng-untouched ng-pristine ng-valid" id="cabinets">
+                            <label for="cabinets">
+                                <div class="flex1">
+                                    <div class="unclicked" id="img1">
+                                        <span id="imgun11"><img src="~/img/3.png"></span>
+                                        <span id="imgun12" style="display:none;"><img src="~/img/3-green.png"></span>
+                                    </div><p>Inside cabinets</p>
+                                </div>
+                            </label>
+
+                            <input type="checkbox" asp-for="scheduleandplanModel.two" class="ng-untouched ng-pristine ng-valid" id="fridge">
+                            <label for="fridge">
+                                <div class="flex1">
+                                    <div class="unclicked" id="img2">
+                                        <span id="imgun21"><img src="~/img/5.png"></span>
+                                        <span id="imgun22" style="display:none;"><img src="~/img/5-green.png"></span>
+                                    </div><p>Inside fridge</p>
+                                </div>
+                            </label>
+
+                            <input type="checkbox" asp-for="scheduleandplanModel.three" class="ng-untouched ng-pristine ng-valid" id="oven">
+                            <label for="oven">
+                                <div class="flex1"><div class="unclicked" id="img3"><span id="imgun31"><img src="~/img/4.png"></span><span id="imgun32" style="display:none;"><img src="~/img/4-green.png"></span></div><p>Inside oven</p></div>
+                            </label>
+
+                            <input type="checkbox" asp-for="scheduleandplanModel.four" class="ng-untouched ng-pristine ng-valid" id="laundry">
+                            <label for="laundry">
+                                <div class="flex1"><div class="unclicked" id="img4"><span id="imgun41"><img src="~/img/2.png"></span><span id="imgun42" style="display:none;"><img src="~/img/2-green.png"></span></div><p>Laundry wash & dry</p></div>
+                            </label>
+
+                            <input type="checkbox" asp-for="scheduleandplanModel.five" class="ng-untouched ng-pristine ng-valid" id="windows">
+                            <label for="windows">
+                                <div class="flex1"><div class="unclicked" id="img5"><span id="imgun51"><img src="~/img/1.png"></span><span id="imgun52" style="display:none;"><img src="~/img/1-green.png"></span></div><p>Interior windows</p></div>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <hr class="hr">
+                    <span class="question">Comments</span>
+                    <textarea asp-for="scheduleandplanModel.comments" class="commentsextra form-control ng-untouched ng-pristine ng-invalid" id="commentstxt" formcontrolname="Comments" maxlength="500" rows="3" placeholder="Comments"></textarea>
+                    <div class="checkboxpets">
+                        <label>
+                            <input asp-for="scheduleandplanModel.haspets" id="haspets" formcontrolname="HasPets" type="checkbox" class="ng-untouched ng-pristine ng-valid">
+                            <span>
+                                I have pets at home
+                            </span>
+                        </label>
+
+                    </div>
+                    <hr class="hr">
+                    <div class="text-right">
+
+                        <input type="button" value="Continue" class="passthree" onclick="screenaddress()" />
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="pills-Your-Details" role="tabpanel" aria-labelledby="pills-contact-tab">
+                <form>
+                    <span class="question">Enter your contact details, so we can serve you in better way!</span>
+                    <div>
+                        <ul class="address-picker ng-valid ng-dirty ng-touched" id="addressul" formarrayname="Address">
+                            <!---->
+                            @if (ViewBag.add1 != null)
+                            {
+                                var x = 0;
+                                @foreach (UserAddress userAddress in Model.userAddress)
+                                {
+                                    if (x < 1)
+                                    {
+                                        <li class="ng-valid ng-dirty ng-touched">
+                                            <label>
+                                                <input formcontrolname="address" name="address" type="radio" id="@userAddress.AddressId" checked class="ng-valid ng-dirty ng-touched">
+                                                <span class="address-block">
+                                                    <b>Address:</b>@userAddress.AddressLine1 @userAddress.AddressLine2
+                                                </span>
+                                                <span>
+                                                    @if (userAddress.Mobile != null)
+                                                    {<b>Phone number:</b>@userAddress.Mobile}
+                                                else
+                                                { <b>Phone number: Null</b>
+                                                }
+
+                                                </span>
+                                                <span class="radio-pointer"></span>
+                                            </label>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="ng-valid ng-dirty ng-touched">
+                                            <label>
+                                                <input formcontrolname="address" name="address" type="radio" id="@userAddress.AddressId" class="ng-valid ng-dirty ng-touched">
+                                                <span class="address-block">
+                                                    <b>Address:</b>@userAddress.AddressLine1 @userAddress.AddressLine2
+                                                </span>
+                                                <span>
+                                                    @if (userAddress.Mobile != null)
+                                                    {<b>Phone number:</b>@userAddress.Mobile}
+                                                else
+                                                { <b>Phone number: Null</b>
+                                                }
+
+                                                </span>
+                                                <span class="radio-pointer"></span>
+                                            </label>
+                                        </li>
+                                    }
+                                    x = 1;
+
+
+                                }
+                            }
+
+                        </ul>
+
+                        <div class="scenario1" id="addaddress2">
+                            <form>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Street name</label>
+                                            <input id="streatname" asp-for="addAddressModel.AddressLine1" class="form-control" type="text" placeholder="Street name" required>
+                                            <span asp-validation-for="addAddressModel.AddressLine1" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="control-label">House number</label>
+                                            <input id="housenumber" asp-for="addAddressModel.AddressLine2" class="form-control" type="text" placeholder="House number" required>
+                                            <span asp-validation-for="addAddressModel.AddressLine2" class="text-danger"></span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Postal code</label>
+                                            <input id="postalcode" asp-for="addAddressModel.PostalCode" class="form-control ng-untouched ng-pristine ng-valid" formcontrolname="PostalCode" name="PostalCode" readonly="" value="@ViewBag.zipcodepass" type="text" placeholder="Postal code" data-placeholder="Postal code">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="control-label">City</label>
+                                            <select id="city" asp-for="addAddressModel.City" class="form-select ng-untouched ng-pristine ng-valid" formcontrolname="City">
+                                                <!---->
+                                                <option value="@ViewBag.city">@ViewBag.city</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Phone number</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">+91</span>
+                                                <input id="phone" asp-for="addAddressModel.Mobile" class="form-control ng-untouched ng-pristine ng-valid" formcontrolname="Mobile" name="Mobile" type="text" placeholder="Phone number" data-placeholder="Phone number">
+                                            </div>
+                                            <!---->
+                                        </div>
+                                    </div>
+                                </div>
+                                <input class="addaddress" onclick="addaddress()" type="button" value="Save">
+                                <input class="addaddresscancle btn btn-default add-new-address-close" onclick="showbtn()" type="button" value="Cancel">
+                            </form>
+                        </div>
+                        <input class="addaddressmain " onclick="showadd()" id="addaddress1" type="button" value="+ Add New Address">
+
+
+
+                        <hr class="hr">
+                        <div class="text-right">
+
+                            <button class="btn btn-primary btn-lg" type="button" onclick="fourthtab()">Continue</button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+            <div class="tab-pane fade" id="pills-Make-Payment" role="tabpanel" aria-labelledby="pills-contact-tab">
+
+
+                <span class="question marginBottom20">Pay securely with Helperland payment gateway!</span>
+                <div class="promo-code">
+
+
+                    <span>Promo code (optional)</span>
+                    <div class="row">
+                        <div class="col-xs-7 col-sm-6 col-md-4">
+                            <input class="promocode form-control  ng-pristine ng-invalid ng-touched" formcontrolname="PromoCode" name="PromoCode" type="text" placeholder="Promo code (optional)" data-placeholder="Promo code (optional)">
+                        </div>
+                        <div class="col-xs-5 col-sm-3 col-md-2">
+                            <button class="promoapply " id="btnApply" type="button">Apply</button>
+                        </div>
+                    </div>
+
+                </div>
+                <hr class="hr">
+
+                <div _ngcontent-c3="" class="field input--focus StripeElement StripeElement--empty" ref="card"><div class="__PrivateStripeElement" style="margin: 0px !important; padding: 0px !important; border: none !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;"><iframe name="__privateStripeFrame6085" frameborder="0" allowtransparency="true" scrolling="no" allow="payment *" src="https://js.stripe.com/v3/elements-inner-card-394573a6a64a0a395aea40524aaab106.html#locale=en&amp;wait=false&amp;mids[guid]=4f056907-3f48-44a3-8a29-54fae6afe4fd066a50&amp;mids[muid]=e0e9b0db-3bf9-400e-ab54-1a9764c7345544c121&amp;mids[sid]=fbdf0ab8-af51-4d97-a5e8-08c66dd364081bebb4&amp;hidePostalCode=true&amp;style[base][iconColor]=%23666EE8&amp;style[base][color]=%2331325F&amp;style[base][lineHeight]=36px&amp;style[base][fontSize]=16px&amp;style[base][::placeholder][color]=%23c5c5c5&amp;rtl=false&amp;componentName=card&amp;keyMode=test&amp;apiKey=pk_test_CbN2mTsadzVC1WpDPDgcDWbG&amp;referrer=https%3A%2F%2Fweb1.anasource.com%2Ftrainee2021%2Fbook-service&amp;controllerId=__privateStripeController6081" title="Secure card payment input frame" style="border: none !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; user-select: none !important; transform: translate(0px) !important; height: 36px;"></iframe><input class="__PrivateStripeElement-input" aria-hidden="true" aria-label=" " autocomplete="false" maxlength="1" style="border: none !important; display: block !important; position: absolute !important; height: 1px !important; top: -1px !important; left: 0px !important; padding: 0px !important; margin: 0px !important; width: 100% !important; opacity: 0 !important; background: transparent !important; pointer-events: none !important; font-size: 16px !important;"></div></div>
+
+                <div class="text-right">
+                    <img src="~/img/card.png">
+                </div>
+                <hr class="hr">
+                <form asp-action="bookservice1">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="checkboxprivacy">
+
+                        <label>
+                            <input id="privacyacheck" asp-for="privacy" type="checkbox" required>
+                            <span for="privacyacheck">
+                                I accepted terms and conditions, the cancellation policy and the privacy policy. I confirm that Helperland starts to execute the contract before the expiry of the withdrawal period and I lose my right of withdrawal as a consumer with full performance of the contract.
+                            </span>
+                        </label>
+                        <span asp-validation-for="privacy" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" id="serviceHrs" value="3" asp-for="scheduleandplanModel.serviceHrs" />
+                    <input type="hidden" id="extraHrs" value="0" asp-for="scheduleandplanModel.extraHrs" />
+                    <input type="hidden" id="subtotal" value="54" asp-for="scheduleandplanModel.subtotal" />
+                    <input type="hidden" id="totalcost" value="54" asp-for="scheduleandplanModel.totalcost" />
+
+                    <input type="hidden" id="servicedate" asp-for="scheduleandplanModel.date" />
+                    <input type="hidden" id="servicetime" value="08:00 am" asp-for="scheduleandplanModel.time" />
+                    <input type="hidden" id="servicehaspats" asp-for="scheduleandplanModel.haspets" />
+                    <input type="hidden" id="sevicecomments" asp-for="scheduleandplanModel.comments" />
+
+                    <input type="hidden" asp-for="zipcodeModel.zipcode" value="@ViewBag.zipcodepass" />
+                    <input type="hidden" value="" id="selectedadd" asp-for="selectedaddress" />
+
+                    <input type="hidden" id="ad1" asp-for="addAddressModel.AddressLine1" />
+                    <input type="hidden" id="ad2" asp-for="addAddressModel.AddressLine2" />
+                    <input type="hidden" id="psc" asp-for="addAddressModel.PostalCode" />
+                    <input type="hidden" id="ct" asp-for="addAddressModel.City" />
+                    <input type="hidden" id="mo" asp-for="addAddressModel.Mobile" />
+
+                    <input type="hidden" id="one" asp-for="scheduleandplanModel.one" />
+                    <input type="hidden" id="two" asp-for="scheduleandplanModel.two" />
+                    <input type="hidden" id="three" asp-for="scheduleandplanModel.three" />
+                    <input type="hidden" id="four" asp-for="scheduleandplanModel.four" />
+                    <input type="hidden" id="five" asp-for="scheduleandplanModel.five" />
+
+
+                    <div class="text-right">
+                        <button class="btn btn-primary btn-lg" type="submit">Complete Booking</button>
+                    </div>
+
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="right">
+        <div class="payment_summary">
+            <div class="heading">Payment Smmary</div>
+
+
+
+            <div class="timing">
+                <p><span class="dateinsummary" id="dateinsummary">00-00-0000</span> @@  <span class="timeinsummary">08:00 am</span></p>
+                <h4>Duration</h4>
+                <div class="flex-1">
+                    <div>
+                        <p>Basic</p>
+                    </div>
+                    <div class="ms-auto">
+                        <p><span class="basictime" id="basictime">3</span> Hrs</p>
+                    </div>
+                </div>
+                <div class="flex-1 total">
+                    <div>
+                        <p class="ex11" style="display:none">Inside cabinats (extra)</p>
+                        <p class="ex12" style="display:none">Inside fridge (extra)</p>
+                        <p class="ex13" style="display:none">Inside oven (extra)</p>
+                        <p class="ex14" style="display:none">Laundry wash & dry (extra)</p>
+                        <p class="ex15" style="display:none">Interior windows (extra)</p>
+                    </div>
+                    <div class="ms-auto">
+                        <p class="ex21" style="display:none">30 Mins</p>
+                        <p class="ex22" style="display:none">30 Mins</p>
+                        <p class="ex23" style="display:none">30 Mins</p>
+                        <p class="ex24" style="display:none">30 Mins</p>
+                        <p class="ex25" style="display:none">30 Mins</p>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div>
+                        <h5>Total Service Time</h5>
+                    </div>
+                    <div class="ms-auto">
+                        <h5><span id="sumoftime" class="sumoftime">3</span> Hrs</h5>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="priceindex">
+                <div class="flex-1">
+                    <div>
+                        <p>Per Cleaning</p>
+                    </div>
+                    <div class="ms-auto">
+                        <h6>$<span id="totalprice" class="totalprice">54</span></h6>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="Totalpayment">
+                <div class="flex-1">
+                    <div>
+                        <h5>Total Payment</h5>
+                    </div>
+                    <div class="ms-auto">
+                        <h4>$<span id="totalprice1" class="totalprice1">54</span></h4>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div>
+                        <p>Effective Price</p>
+                    </div>
+                    <div class="ms-auto">
+                        <h6>$<span class="Effectiveprice">43.2</span></h6>
+                    </div>
+                </div>
+                <div class="note">*You will save 20% according to §35a EStG.</div>
+            </div>
+            <div class="alwaysinclude">
+
+                <i class="fa fa-smile-o" aria-hidden="true"></i>&nbsp;See what is always included
+            </div>
+
+        </div>
+        <h2>Questions?</h2>
+
+        <details>
+            <summary>Which Helperland professional will come to my place?</summary>
+            <p>Lorem ipsum text</p>
+        </details>
+        <details>
+            <summary>Which Helperland professional will come to my place?</summary>
+            <p>Lorem ipsum text</p>
+        </details>
+        <details>
+            <summary>Which Helperland professional will come to my place?</summary>
+            <p>Lorem ipsum text</p>
+        </details>
+        <a asp-action="Faq" asp-controller="Home" class="formore">For more help</a>
+    </div>
+</section>
+<button onclick="document.getElementById('myModal4').style.display='block';" class="btnpaymentsummary">Payment Summary</button>
+<div id="myModal4" class="modal" style="display:none;">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close" onclick="document.getElementById('myModal4').style.display='none';"><img src="~/img/close.png"></span>
+        <div class="right">
+            <div class="payment_summary">
+                <div class="heading">Payment Smmary</div>
+
+
+
+                <div class="timing">
+                    <p><span id="dateinsummary1" class="dateinsummary">00-00-0000</span> @@  <span class="timeinsummary">08:00 am</span></p>
+                    <h4>Duration</h4>
+                    <div class="flex-1">
+                        <div>
+                            <p>Basic</p>
+                        </div>
+                        <div class="ms-auto">
+                            <p><span class="basictime">3</span> Hrs</p>
+                        </div>
+                    </div>
+                    <div class="flex-1 total">
+                        <div>
+                            <p class="ex11" style="display:none">Inside cabinats (extra)</p>
+                            <p class="ex12" style="display:none">Inside fridge (extra)</p>
+                            <p class="ex13" style="display:none">Inside oven (extra)</p>
+                            <p class="ex14" style="display:none">Laundry wash & dry (extra)</p>
+                            <p class="ex15" style="display:none">Interior windows (extra)</p>
+                        </div>
+                        <div class="ms-auto">
+                            <p class="ex21" style="display:none">30 Mins</p>
+                            <p class="ex22" style="display:none">30 Mins</p>
+                            <p class="ex23" style="display:none">30 Mins</p>
+                            <p class="ex24" style="display:none">30 Mins</p>
+                            <p class="ex25" style="display:none">30 Mins</p>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div>
+                            <h5>Total Service Time</h5>
+                        </div>
+                        <div class="ms-auto">
+                            <h5><span class="sumoftime">3</span> Hrs</h5>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="priceindex">
+                    <div class="flex-1">
+                        <div>
+                            <p>Per Cleaning</p>
+                        </div>
+                        <div class="ms-auto">
+                            <h6>$<span class="totalprice">54</span></h6>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="Totalpayment">
+                    <div class="flex-1">
+                        <div>
+                            <h5>Total Payment</h5>
+                        </div>
+                        <div class="ms-auto">
+                            <h4>$<span class="totalprice1">54</span></h4>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div>
+                            <p>Effective Price</p>
+                        </div>
+                        <div class="ms-auto">
+                            <h6>$<span class="Effectiveprice">43.2</span></h6>
+                        </div>
+                    </div>
+                    <div class="note">*You will save 20% according to §35a EStG.</div>
+                </div>
+                <div class="alwaysinclude">
+
+                    <i class="fa fa-smile-o" aria-hidden="true"></i>&nbsp;See what is always included
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div id="myModal5" class="modal2">
+
+    <!-- Modal content -->
+    <div class="modal-content2">
+
+        <div class="form">
+
+            <div class="header1">
+
+                Alert
+            </div>
+            <div>We regret to inform you that your selected zip code is not covered by Helperland services until now!</div>
+
+
+            <div class="element text-center">
+                <a class="okbtn" asp-action="Index" asp-controller="Home">ok</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div id="myModal6" class="modal2">
+
+    <!-- Modal content -->
+    <div class="modal-content2">
+
+        <div class="form">
+
+            <div class="header1">
+                <img src="~/img/Sucess.jpg" />
+                <br />
+                    Your Serviceid : @ViewBag.serviceid
+            </div>
+
+
+            <div class="element">
+                <form>
+                    <button asp-action="Index">ok</button>
+                </form>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    function fourthtab() {
+        var getSelectedValue = document.querySelector('input[name="address"]:checked');
+        if (getSelectedValue != null) {
+            //alert("Selected radio button values is: " + getSelectedValue.id);
+            document.getElementById('selectedadd').value = getSelectedValue.id;
+        }
+        document.getElementById('pills-Make-Payment-tab').setAttribute("data-bs-toggle", "pill");
+        document.getElementById('pills-Your-Details-tab').classList.remove('active');
+        document.getElementById('pills-Your-Details-tab').classList.add('done')
+        document.getElementById('pills-Make-Payment-tab').classList.add('active');
+
+        document.getElementById('pills-Your-Details').classList.remove('show');
+        document.getElementById('pills-Your-Details').classList.remove('active');
+        document.getElementById('pills-Make-Payment').classList.add('show');
+        document.getElementById('pills-Make-Payment').classList.add('active');
+    }
+    function screenaddress() {
+        document.getElementById('pills-Your-Details-tab').setAttribute("data-bs-toggle", "pill");
+        document.getElementById('pills-Schedule-Plan-tab').classList.remove('active');
+        document.getElementById('pills-Schedule-Plan-tab').classList.add('done')
+        document.getElementById('pills-Your-Details-tab').classList.add('active');
+        document.getElementById('pills-Schedule-Plan').classList.remove('show');
+        document.getElementById('pills-Schedule-Plan').classList.remove('active');
+        document.getElementById('pills-Your-Details').classList.add('show');
+        document.getElementById('pills-Your-Details').classList.add('active');
+
+    }
+
+</script>
+@if (ViewBag.serviceid != null) 
+{ 
+    <script>
+        document.getElementById('myModal6').style.display = 'block';
+    </script>
+}
+@if (ViewBag.zipcodematch != null)
+{
+    <script>
+
+        document.getElementById('pills-Schedule-Plan-tab').setAttribute("data-bs-toggle", "pill");
+        document.getElementById('pills-Setup-Service-tab').classList.remove('active');
+        document.getElementById('pills-Setup-Service-tab').classList.add('done');
+        document.getElementById('pills-Schedule-Plan-tab').classList.add('active');
+        document.getElementById('pills-Setup').classList.remove('show');
+        document.getElementById('pills-Setup').classList.remove('active');
+        document.getElementById('pills-Schedule-Plan').classList.add('show');
+        document.getElementById('pills-Schedule-Plan').classList.add('active');
+
+
+    </script>
+}
+@if (ViewBag.zipcodeunmatch != null)
+{
+    <script type="text/javascript">
+        document.getElementById('myModal5').style.display = 'block';
+    </script>
+}
+@section Scripts {
+    <script type="text/javascript" src="~/JS/main.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

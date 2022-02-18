@@ -23,7 +23,8 @@ namespace Helperland
             services.AddDistributedMemoryCache();
             services.AddSession(option =>
             {
-                option.IdleTimeout = TimeSpan.FromHours(2);
+                option.IdleTimeout = TimeSpan.FromMinutes(60);
+            
             });
             services.AddHttpContextAccessor();
 

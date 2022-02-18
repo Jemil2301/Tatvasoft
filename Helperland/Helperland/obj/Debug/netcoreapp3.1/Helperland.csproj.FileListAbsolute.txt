@@ -156,3 +156,5 @@ F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Welcome.cshtml.g
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Helperland.csproj.AssemblyReference.cache
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\forgotpassword.cshtml.g.cs
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\BecomeaHelper.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\bookservice.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\schedule.cshtml.g.cs

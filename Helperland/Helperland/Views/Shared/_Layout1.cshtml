@@ -1,179 +1,269 @@
 ﻿@model Helperland.ViewModel.LoginForgot
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewBag.Title</title>
+    <link href="~/img/favicon_img.png" rel="shortcut icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="~/lib/jquery-validate/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="https://code.jquery.com/jquery-1.13.0.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
     <link rel="stylesheet" type="text/css" href="~/Css/Style.css">
     <link rel="stylesheet" type="text/css" href="~/Css/Style1.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 <body>
-    <header class="second-header">
-        <nav class="navbar navbar-expand-lg navigation-wrap1">
-            <div class="container-fluid">
-                <a id="navbrand" class="navbar-brand" href="#">
-                    <img id="logo" src="~/img/logo.png">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto ">
-                        <li class="nav-item ">
-                            <a class="nav-link sec" href="#bookacleaner">Book now</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link first" asp-controller="home" asp-action="Price">Price & Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link first-1" href="#ourguarantee">Warranty</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link first-1" href="#blog">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link first-1" asp-controller="home" asp-action="Contactus">Contact</a>
-                        </li>
-                        <li>
-                            <button id="myBtn" onclick="document.getElementById('myModal').style.display='block';" class="main-btn1"> Login</button>
-                        </li>
-                        <li>
-                            <button id="mainbtn2" class="main-btn2" ><a asp-action="BecomeaHelper" asp-controller="Home"> Become a Helper</a></button>
-                        </li>
+    @if (HttpContextAccessor.HttpContext.Session.GetString("FirstName") == null)
+    {
 
-                    </ul>
-                </div>
-            </div>
+        <header class="second-header">
+            <nav class="navbar navbar-expand-lg navigation-wrap1">
+                <div class="container-fluid">
+                    <a id="navbrand" class="navbar-brand" href="#">
+                        <img id="logo" src="~/img/logo.png">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto ">
+                            <li class="nav-item ">
+                                <a class="nav-link sec" onclick="chekloginornot()">Book now</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link first" asp-controller="home" asp-action="Price">Price & Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link first-1" href="#ourguarantee">Warranty</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link first-1" href="#blog">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link first-1" asp-controller="home" asp-action="Contactus">Contact</a>
+                            </li>
+                            <li>
+                                <button id="myBtn" onclick="document.getElementById('myModal').style.display='block';" class="main-btn1"> Login</button>
+                            </li>
+                            <li>
+                                <button id="mainbtn2" class="main-btn2"><a asp-action="BecomeaHelper" asp-controller="Home"> Become a Helper</a></button>
+                            </li>
 
-        </nav>
-
-    </header>
-
-    <div>
-        @RenderBody()
-        <div id="myModal" class="modal">
-
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close" onclick="document.getElementById('myModal').style.display='none';"><img src="~/img/close.png"></span>
-                <div class="form">
-
-                    <div class="header">
-                        Login to your account
+                        </ul>
                     </div>
-                    <form asp-action="Login" asp-controller="Shared">
-                        <div asp-validation-summary="All" class="text-danger"></div>
-                        <div class="element form-group icon-textbox right">
-                            <input asp-for="LoginModel.Email" class="emailfield form-control" placeholder="Email" data-placeholder="Email" />
+                </div>
 
-                        </div>
-                        <div class="element form-group">
+            </nav>
 
-                            <input asp-for="LoginModel.Password" class="passfield form-control " placeholder="Password">
+        </header>
+        }
+
+    else
+    {
+<header class="second-header">
+    <nav class="navbar navbar-expand-lg navigation-wrap1">
+        <div class="container-fluid">
+            <a id="navbrand" class="navbar-brand" href="#">
+                <img id="logo" src="~/img/logo.png">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto ">
+                    @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserTypeId") == 1)
+                    {
+                    <li class="nav-item ">
+                        <a class="nav-link sec" asp-action="bookservice" asp-controller="Home">Book now</a>
+                    </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link first" asp-controller="home" asp-action="Price">Price & Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link first-1" href="#ourguarantee">Warranty</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link first-1" href="#blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link first-1" asp-controller="home" asp-action="Contactus">Contact</a>
+                    </li>
+                    <div class="border" style=" background-color: #e1e1e1; width: 1px; height: 35px;"></div>
+                    <li class="nav-item">
+                        <a class="first-2"><img src="~/img/icon-notification.png"><span class="num">2</span></a>
+                    </li>
+                    <div class="border" style=" background-color: #e1e1e1; width: 1px; height: 35px;"></div>
+                    <li class="nav-item">
+                        <a class="first-3"><img src="~/img/user(1).png"></a>
+                    </li>
+                    <li>
+
+                        <div class="btn-group dropstart">
+                            <img class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" src="~/img/arrow.png">
+
+                            <ul class="dropdown-menu mt-5">
+                                <li class="username">
+                                    Welcome,<br>
+                                    <b>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")</b>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" routerlink="/customer/servicerequest" title="My Dashboard" href="#">My Dashboard</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" title="My Settings" href="#">My Settings</a>
+                                </li>
+                                <li><a class="dropdown-item" asp-action="logout" asp-controller="Home">Log out</a></li>
+                            </ul>
                         </div>
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label asp-for="LoginModel.Rememberme">
-                                    <input asp-for="LoginModel.Rememberme" />
-                                    
-                                    @Html.DisplayNameFor(m=>m.LoginModel.Rememberme)
-                                </label>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+
+</header>
+
+        
+            }
+
+            <div>
+                @RenderBody()
+                <div id="myModal" class="modal">
+
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                        <span class="close" onclick="document.getElementById('myModal').style.display='none';"><img src="~/img/close.png"></span>
+                        <div class="form">
+
+                            <div class="header">
+                                Login to your account
+                            </div>
+                            <form asp-action="Login" asp-controller="Shared">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div class="element form-group icon-textbox right">
+                                    <input asp-for="LoginModel.Email" class="emailfield form-control" placeholder="Email" data-placeholder="Email" />
+
+                                </div>
+                                <input asp-for="chceckbookorlogin" id="mytext" value="" hidden />
+                                <div class="element form-group">
+
+                                    <input asp-for="LoginModel.Password" class="passfield form-control " placeholder="Password">
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label asp-for="LoginModel.Rememberme">
+                                            <input asp-for="LoginModel.Rememberme" />
+
+                                            @Html.DisplayNameFor(m => m.LoginModel.Rememberme)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="element">
+                                    <button type="submit">Login</button>
+                                </div>
+                            </form>
+                            <div class="forgot">
+                                <a id="forgotpass" onclick="document.getElementById('myModal1').style.display='block' ;document.getElementById('myModal').style.display='none';">Forgot password?</a>
+                            </div>
+                            <div class="register">
+                                Don't have an account?<a asp-controller="home" asp-action="Createaccount"> Create an account</a>
                             </div>
                         </div>
-                        <div class="element">
-                            <button type="submit">Login</button>
-                        </div>
-                    </form>
-                    <div class="forgot">
-                        <a id="forgotpass" onclick="document.getElementById('myModal1').style.display='block' ;document.getElementById('myModal').style.display='none';">Forgot password?</a>
-                    </div>
-                    <div class="register">
-                        Don't have an account?<a asp-controller="home" asp-action="Createaccount"> Create an account</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-
-
-
-
-
-
-        <div id="myModal1" class="modal1">
-
-            <!-- Modal content -->
-            <div class="modal-content1">
-                <span class="close" onclick="document.getElementById('myModal1').style.display='none';"><img src="~/img/close.png"></span>
-                <div class="form">
-
-                    <div class="header">
-                        Forgot Password
-                    </div>
-                    <form asp-action="forgot" asp-controller="Shared">
-                        <div asp-validation-summary="All" class="text-danger"></div>
-                        <div class="element form-group icon-textbox right">
-                            <input asp-for="ForgotModel.Email" class="form-control" placeholder="Email" data-placeholder="Email" />
-
-                        </div>
-
-                        <div class="element">
-                            <button type="submit">send</button>
-                        </div>
-                    </form>
-                    <div class="forgot">
-                        <a id="forgotpass" onclick="document.getElementById('myModal1').style.display='none';document.getElementById('myModal').style.display='block';">Login now</a>
                     </div>
 
                 </div>
+
+
+
+
+
+
+
+                <div id="myModal1" class="modal1">
+
+                    <!-- Modal content -->
+                    <div class="modal-content1">
+                        <span class="close" onclick="document.getElementById('myModal1').style.display='none';"><img src="~/img/close.png"></span>
+                        <div class="form">
+
+                            <div class="header">
+                                Forgot Password
+                            </div>
+                            <form asp-action="forgot" asp-controller="Shared">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div class="element form-group icon-textbox right">
+                                    <input asp-for="ForgotModel.Email" class="form-control" placeholder="Email" data-placeholder="Email" />
+
+                                </div>
+
+                                <div class="element">
+                                    <button type="submit">send</button>
+                                </div>
+                            </form>
+                            <div class="forgot">
+                                <a id="forgotpass" onclick="document.getElementById('myModal1').style.display='none';document.getElementById('myModal').style.display='block';">Login now</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
             </div>
 
-        </div>
+            <footer class="ft2">
+                <div class="ftlogo">
+                    <img src="~/img/logo.png">
+                </div>
 
 
-    </div>
-
-    <footer class="ft2">
-        <div class="ftlogo">
-            <img src="~/img/logo.png">
-        </div>
-
-
-        <div class="ftlink">
-            <a asp-controller="home" asp-action="index">HOME</a>
-            <a asp-controller="home" asp-action="Aboutus">ABOUT</a>
-            <a href="#">TESTIMONIALS</a>
-            <a asp-controller="home" asp-action="Faq">FAQS</a>
-            <a href="#">INSURANCE POLICY</a>
-            <a href="#">IMPRESSUM</a>
-        </div>
+                <div class="ftlink">
+                    <a asp-controller="home" asp-action="index">HOME</a>
+                    <a asp-controller="home" asp-action="Aboutus">ABOUT</a>
+                    <a href="#">TESTIMONIALS</a>
+                    <a asp-controller="home" asp-action="Faq">FAQS</a>
+                    <a href="#">INSURANCE POLICY</a>
+                    <a href="#">IMPRESSUM</a>
+                </div>
 
 
-        <div class="ftsocial">
+                <div class="ftsocial">
 
-            <img class="img1" src="~/img/ic-facebook.png">
-            <img class="img2" src="~/img/ic-instagram.png">
-        </div>
+                    <img class="img1" src="~/img/ic-facebook.png">
+                    <img class="img2" src="~/img/ic-instagram.png">
+                </div>
 
 
-    </footer>
+            </footer>
 
-    <footer class="ftfinal">
+            <footer class="ftfinal">
 
-        <div><p>©2018 Helperland. All rights reserved.     Terms and Conditions  |  Privacy Policy</p></div>
-    </footer>
-    @RenderSection("Scripts", required: false)
-</body>
+                <div><p>©2018 Helperland. All rights reserved.     Terms and Conditions  |  Privacy Policy</p></div>
+            </footer>
+            <script>
+                function chekloginornot() {
+
+                    document.getElementById("mytext").value = "booknow";
+                    document.getElementById('myModal').style.display = 'block';
+                }
+            </script>
+            @RenderSection("Scripts", required: false)
+    </body>
 </html>
