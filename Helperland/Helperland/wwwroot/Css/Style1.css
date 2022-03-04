@@ -28,7 +28,7 @@
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
  /* Sit on top */
-  padding-top:150px ; /* Location of the box */
+  padding-top:130px ; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -36,7 +36,7 @@
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-
+  z-index:3;
 }
 
 /* Modal Content */
@@ -47,6 +47,7 @@
   border: 1px solid #888;
   width:348px;
   border-radius: 6px;
+  
  
 }
 .modal2 {
@@ -71,6 +72,33 @@
 	border: 1px solid #888;
 	width: 348px;
 	border-radius: 6px;
+}
+
+.modal-content3 {
+	background-color: white;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 750px;
+	border-radius: 6px;
+	z-index:3;
+}
+.modal-content4 {
+	background-color: white;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 500px;
+	border-radius: 6px;
+	z-index: 3;
+}
+@media(max-width:991px) {
+	.modal-content3 {
+		width:auto;
+	}
+	.modal-content4 {
+		width: auto;
+	}
 }
 
 /* The Close Button */
@@ -112,6 +140,15 @@
   margin-bottom: 40px;
   font-family:'Roboto',bold;
 
+}
+.form .header3 {
+	text-align: left;
+	font-size: 24px;
+	font-weight: 600;
+	color: #646464;
+	margin: 20px 20px;
+
+	font-family: 'Roboto',bold;
 }
 .form .header1 {
 	text-align: center;

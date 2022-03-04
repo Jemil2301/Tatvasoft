@@ -12,6 +12,8 @@ namespace Helperland.Models
         public string AddressLine1 { get; set; }
         [Required(ErrorMessage = "Please enter House number")]
         public string AddressLine2 { get; set; }
+
+        [Required(ErrorMessage = "Please enter City")]
         public string City { get; set; }
         public string PostalCode { get; set; }
         public string Mobile { get; set; }

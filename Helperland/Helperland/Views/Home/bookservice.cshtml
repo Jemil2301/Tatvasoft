@@ -211,6 +211,12 @@
             <div class="tab-pane fade" id="pills-Your-Details" role="tabpanel" aria-labelledby="pills-contact-tab">
                 <form>
                     <span class="question">Enter your contact details, so we can serve you in better way!</span>
+                    <div class="sucess col-lg-12" style="justify-content: center; align-items: center; color: white; opacity:0.5; background-color: #a83c34; border-color: #d6e9c6; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; display: none;" id="_sucess">
+                        <span class="close" onclick="document.getElementById('_sucess').style.display='none';">x</span>
+                        Plese Add address to Proceed
+
+
+                    </div>
                     <div>
                         <ul class="address-picker ng-valid ng-dirty ng-touched" id="addressul" formarrayname="Address">
                             <!---->
@@ -292,15 +298,31 @@
                                             <input id="postalcode" asp-for="addAddressModel.PostalCode" class="form-control ng-untouched ng-pristine ng-valid" formcontrolname="PostalCode" name="PostalCode" readonly="" value="@ViewBag.zipcodepass" type="text" placeholder="Postal code" data-placeholder="Postal code">
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label class="control-label">City</label>
-                                            <select id="city" asp-for="addAddressModel.City" class="form-select ng-untouched ng-pristine ng-valid" formcontrolname="City">
-                                                <!---->
-                                                <option value="@ViewBag.city">@ViewBag.city</option>
-                                            </select>
+                                    @if (ViewBag.city != null)
+                                    {
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label">City</label>
+                                                <select id="city" asp-for="addAddressModel.City" required class="form-select ng-untouched ng-pristine ng-valid" formcontrolname="City">
+                                                    <!---->
+                                                    <option value="@ViewBag.city">@ViewBag.city</option>
+                                                </select>
+                                                <span asp-validation-for="addAddressModel.City" class="text-danger"></span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label">City</label>
+                                                <input id="city" asp-for="addAddressModel.City" class="form-control" placeholder="City">
+                                                <span asp-validation-for="addAddressModel.City" class="text-danger"></span>
+
+                                            </div>
+                                        </div>
+
+                                    }
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label class="control-label">Phone number</label>
@@ -653,16 +675,21 @@
         if (getSelectedValue != null) {
             //alert("Selected radio button values is: " + getSelectedValue.id);
             document.getElementById('selectedadd').value = getSelectedValue.id;
-        }
-        document.getElementById('pills-Make-Payment-tab').setAttribute("data-bs-toggle", "pill");
-        document.getElementById('pills-Your-Details-tab').classList.remove('active');
-        document.getElementById('pills-Your-Details-tab').classList.add('done')
-        document.getElementById('pills-Make-Payment-tab').classList.add('active');
+            document.getElementById('pills-Make-Payment-tab').setAttribute("data-bs-toggle", "pill");
+            document.getElementById('pills-Your-Details-tab').classList.remove('active');
+            document.getElementById('pills-Your-Details-tab').classList.add('done')
+            document.getElementById('pills-Make-Payment-tab').classList.add('active');
 
-        document.getElementById('pills-Your-Details').classList.remove('show');
-        document.getElementById('pills-Your-Details').classList.remove('active');
-        document.getElementById('pills-Make-Payment').classList.add('show');
-        document.getElementById('pills-Make-Payment').classList.add('active');
+            document.getElementById('pills-Your-Details').classList.remove('show');
+            document.getElementById('pills-Your-Details').classList.remove('active');
+            document.getElementById('pills-Make-Payment').classList.add('show');
+            document.getElementById('pills-Make-Payment').classList.add('active');
+        }
+        else
+        {
+            document.getElementById('_sucess').style.display = 'block';
+        }
+        
     }
     function screenaddress() {
         document.getElementById('pills-Your-Details-tab').setAttribute("data-bs-toggle", "pill");

@@ -158,3 +158,7 @@ F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\forgotpassword.c
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\BecomeaHelper.cshtml.g.cs
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\bookservice.cshtml.g.cs
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\schedule.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Dashboard.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Servicehistory.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\customerprofile.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Favouritepros.cshtml.g.cs

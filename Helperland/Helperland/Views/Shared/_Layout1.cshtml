@@ -16,6 +16,13 @@
     <script src="https://code.jquery.com/jquery-1.13.0.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
     <link rel="stylesheet" type="text/css" href="~/Css/Style.css">
     <link rel="stylesheet" type="text/css" href="~/Css/Style1.css">
 
@@ -121,10 +128,10 @@
                                     <b>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")</b>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" routerlink="/customer/servicerequest" title="My Dashboard" href="#">My Dashboard</a>
+                                    <a class="dropdown-item"  title="My Dashboard" asp-action="Dashboard" asp-controller="Home">My Dashboard</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" title="My Settings" href="#">My Settings</a>
+                                    <a class="dropdown-item" title="My Settings" asp-action="customerprofile" asp-controller="Home">My Settings</a>
                                 </li>
                                 <li><a class="dropdown-item" asp-action="logout" asp-controller="Home">Log out</a></li>
                             </ul>
@@ -132,7 +139,7 @@
                     </li>
 
                 </ul>
-            </div>
+            
         </div>
 
     </nav>

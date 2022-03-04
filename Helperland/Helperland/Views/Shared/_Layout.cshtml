@@ -127,10 +127,10 @@
                                                 <b>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")</b>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" routerlink="/customer/servicerequest" title="My Dashboard" href="#">My Dashboard</a>
+                                                <a class="dropdown-item" asp-action="Dashboard" asp-controller="Home" title="My Dashboard">My Dashboard</a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" title="My Settings" href="#">My Settings</a>
+                                                <a class="dropdown-item" title="My Settings" asp-action="customerprofile" asp-controller="Home">My Settings</a>
                                             </li>
                                             <li><a class="dropdown-item" asp-action="logout" asp-controller="Home">Log out</a></li>
                                         </ul>

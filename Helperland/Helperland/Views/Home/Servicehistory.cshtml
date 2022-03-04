@@ -1,0 +1,403 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Helperland.Models.Data
+@model Helperland.ViewModel.CustomerViewModel
+@{
+    ViewBag.Title = "Service History";
+    //Layout = "~/Views/Shared/_Layout1.cshtml";
+    ViewBag.x = "";
+}
+<section class="container-fluid name">
+    <p>Welcome, <span>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")!</span></p>
+</section>
+
+
+<section class="container-fluid top-side">
+
+    <div class="wrapper">
+        <div class="sidebar">
+
+            <ul>
+                <li>
+                    <a asp-action="Dashboard" asp-controller="Home">
+                        Dashboard
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="">
+                        Service History
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Service Schedule
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-action="Favouritepros" asp-controller="Home">
+                        Favourite Pros
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Invoices
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="">
+                        Notifications
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="Customer_service-history-table">
+        <div class="top1">
+            <h2>
+                Service History
+            </h2>
+            <button id="button_export_excel">
+                Export
+            </button>
+        </div>
+
+        <table class="datatable" id="table-id">
+            <thead>
+                <tr class="table_th">
+                    <th>Service id </th>
+                    <th>Service Details </th>
+                    <th>Service Provider  </th>
+                    <th>Payment  </th>
+                    <th>Status  </th>
+                    <th>Rate SP  </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                {
+                    var sd = serviceRequest.ServiceRequestId.ToString();
+
+                    var sd1 = int.Parse(sd);
+                    var sp_count = 0;
+                    decimal sp_avg = 0;
+                    var ratingidname = serviceRequest.ServiceRequestId.ToString() + "r2";
+                    var ratingidname1 = serviceRequest.ServiceRequestId.ToString() + "r1";
+                    <tr>
+                        <td class="tdserviceid tdp" style="cursor:pointer;"><span onclick="details1(@sd)">@serviceRequest.ServiceId</span></td>
+                        <td class="tddate" onclick="details1(@sd)"><img src="~/img/cal.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br>@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")</td>
+                        @if (serviceRequest.ServiceProviderId != null)
+                        {
+                            <td class="imgtd">
+                                <div class="imgcap"><img src="~/img/cap.png"></div>
+                                <div class="ratename">
+                                    @foreach (User user in Model.users)
+                                    {
+                                        if (serviceRequest.ServiceProviderId == user.UserId)
+                                        {<div class="tdp">@user.FirstName @user.LastName</div>}
+
+                                    }
+
+                                    @foreach (Rating rating in Model.ratings)
+                                    {
+                                        if (serviceRequest.ServiceProviderId == rating.RatingTo)
+                                        {
+                                            sp_count = sp_count + 1;
+                                            sp_avg = sp_avg + rating.Ratings;
+                                        }
+
+                                    }
+                                    @if (sp_count >= 1)
+                                    {
+                                        sp_avg = sp_avg / sp_count;
+                                        sp_avg = Convert.ToDecimal(String.Format("{0:0.00}", sp_avg));
+                                    }
+                                    <div class="ratingtd" onload="avgrating('@ratingidname',@sp_avg)">
+                                        <span id=@ratingidname style="z-index:0;"></span>
+                                        <div class="ratingnum">@sp_avg</div>
+                                    </div>
+                                </div>  
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td>
+                            <div class="pricetd">$@serviceRequest.TotalCost</div>
+                        </td>
+                        <td>
+                            @if (serviceRequest.Status == 1)
+                            {
+                                <div class="statustd">
+                                    <button>
+                                        Completed
+                                    </button>
+                                </div>
+                            }
+                            @if (serviceRequest.Status == 2)
+                            {
+                                <div class="statuscancletd">
+                                    <button>
+                                        Cancelled
+                                    </button>
+                                </div>
+                            }
+
+                        </td>
+                        <td>
+                            @if (serviceRequest.Status == 2)
+                            {
+                                <div class="ratesp">
+                                    <button disabled>Rate SP</button>
+
+                                </div>
+                            }
+                            else
+                            {
+                                var j = 0;
+                                @foreach (Rating rating in Model.ratings)
+                                {
+                                    if (rating.ServiceRequestId == serviceRequest.ServiceRequestId)
+                                    {
+                                        j = 1;
+
+                                    }
+
+                                }
+                                if (j == 1)
+                                {
+                                    <div class="ratesp">
+                                        <button disabled>Rate SP</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="ratesp">
+                                        <button onclick="Ratesp(@serviceRequest.ServiceId)">Rate SP</button>
+
+                                    </div>
+                                }/*
+                                 <div class="ratesp">
+                                     <button onclick="Ratesp(@serviceRequest.ServiceId)">Rate SP</button>
+
+                                 </div>*/
+
+                            }
+                        </td>
+                    </tr>
+                    <div id="@sd" class="modal1">
+
+                        <!-- Modal content -->
+                        <div class="modal-content3">
+                            <span class="close" onclick="document.getElementById('@sd').style.display='none';"><img src="~/img/close.png"></span>
+                            <form asp-action="updaterequest" asp-controller="Home">
+                            </form>
+
+
+
+                            <div class="form">
+                                <div class="header3">
+
+                                    Service Details
+                                </div>
+
+
+                                <div class="dateandtime">
+                                    @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                </div>
+                                <div class="popupdiv">
+                                    Duration:<span>@serviceRequest.ServiceHours Hrs</span>
+                                </div>
+                                <hr style="width:100%;" />
+                                <div class="popupdiv">
+                                    Service Id:<span>@serviceRequest.ServiceId</span>
+                                </div>
+                                <div class="popupdiv">
+                                    Extra:
+                                    @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+                                    {
+                                        if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
+                                        {
+
+                                            if (serviceRequestExtra.ServiceExtraId == 1)
+                                            {
+                                                <span> Inside cabinets</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 2)
+                                            {
+                                                <span>Inside fridge</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 3)
+                                            {
+                                                <span> Inside oven</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 4)
+                                            {
+                                                <span> Laundry wash & dry</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 5)
+                                            {
+                                                <span> Interior windows</span>
+                                            }
+
+                                        }
+
+                                    }
+
+
+                                </div>
+                                <div class="popupdiv">
+                                    Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
+                                </div>
+                                <hr style="width:100%;" />
+                                @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
+                                {
+                                    if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                    {
+                                        <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
+                                        if (serviceRequestAddress.Mobile != null)
+                                        {
+                                            <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
+                                        }
+                                        if (serviceRequestAddress.Email != null)
+                                        {
+                                            <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
+                                        }
+                                    }
+                                }
+
+                                <hr style="width:100%;" />
+                                <div class="popupdiv">Comments</div>
+                                @if (serviceRequest.HasPets == true)
+                                {
+                                    <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
+                                }
+                                else
+                                {
+                                    <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
+                                }
+
+
+
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="@serviceRequest.ServiceId" class="modal1">
+
+                        <!-- Modal content -->
+                        <div class="modal-content4">
+                            <span class="close" onclick="document.getElementById(@serviceRequest.ServiceId).style.display = 'none';"><img src="~/img/close.png"></span>
+                            <form asp-action="updaterequest" asp-controller="Home">
+                            </form>
+
+
+
+                            <div class="form">
+                                <div class="imgtd1">
+                                    <div class="imgcap"><img src="~/img/cap.png"></div>
+                                    <div class="ratename">
+
+                                        @foreach (User user in Model.users)
+                                        {
+                                            if (serviceRequest.ServiceProviderId == user.UserId)
+                                            {<div class="tdp">@user.FirstName @user.LastName</div>}
+
+                                    }
+
+                                        <div class="ratingtd" onload="avgrating('@ratingidname1',@sp_avg);">
+
+                                            <span id=@ratingidname1></span>
+                                            <div class="ratingnum">@sp_avg</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="header3">
+
+                                    Rate Your Service Provider
+                                </div>
+                                <hr style="width:100%;" />
+                                <form asp-action="rateservicep" asp-controller="Home">
+                                    <input type="hidden" asp-for="rate.ServiceRequestId" value="@serviceRequest.ServiceRequestId" />
+                                    <input type="hidden" asp-for="rate.RatingFrom" value="@serviceRequest.UserId" />
+                                    <input type="hidden" asp-for="rate.RatingTo" value="@serviceRequest.ServiceProviderId" />
+
+                                    <input asp-for="ontime" class="form-control" type="hidden" id="rate11" value="1" />
+                                    <input asp-for="friendly" class="form-control" type="hidden" id="rate21" value="1" />
+                                    <input asp-for="quality" class="form-control" type="hidden" id="rate31" value="1" />
+
+                                    <div class="d-flex raingpadding"><div>On time arrival</div><div class="rateYo1" style="padding-left:40px;"></div></div>
+
+                                    <div class="d-flex raingpadding"><div>Friendly</div><div class="rateYo2" style="padding-left:90px;"></div></div>
+
+                                    <div class="d-flex raingpadding"><div>Quality of service</div><div class="rateYo3" style="padding-left:25px;"></div></div>
+
+                                    <div class="raingpadding">Feedback on Service provider</div>
+                                    <textarea asp-for="rate.Comments" style="width:100%; height:100px;"></textarea>
+                                    <div class="element">
+                                        <button type="submit">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+
+
+            </tbody>
+        </table>
+    </div>
+
+
+</section>
+
+<script>
+    function details1(x) {
+
+        document.getElementById(x).style.display = 'block';
+        document.getElementById('hiddenserviceid').value = x;
+
+    }
+    function Ratesp(x) {
+        document.getElementById(x).style.display = 'block';
+    }
+    $(document).ready(function () {
+        $('div[onload]').trigger('onload');
+        
+    });
+   
+
+   
+    function avgrating(id, num) {
+      
+        $(document).ready(function () {
+            $("#" + id).rateYo({
+                rating: num,
+                halfStar: true,
+                readOnly: true,
+                starWidth: "20px",
+
+            });
+            
+        });
+    }
+</script>
+
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="~/JS/main.js"></script>

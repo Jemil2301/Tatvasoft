@@ -65,7 +65,7 @@ namespace Helperland.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Welcome", "Home");
+                        return RedirectToAction("Dashboard", "Home");
                     }
                 }
                 else 

@@ -76,24 +76,53 @@ $(document).ready(function() {
 
 
 
+  });
+
+   
+    $(".rateYo1").rateYo({
+
+        onSet: function (rating1, rateYoInstance) {
+    
+         
+           
+
+            $("input[id=rate11]").val(rating1);
+        },
+        starWidth: "20px"
+    });
+
+    $(".rateYo2").rateYo({
+
+        onSet: function (rating1, rateYoInstance) {
+
+           
+           
+            $("input[id=rate21]").val(rating1);
+        },
+        starWidth: "20px"
+    });
+    $(".rateYo3").rateYo({
+
+        onSet: function (rating1, rateYoInstance) {
+
+          
+          
+            $("input[id=rate31]").val(rating1);
+        },
+        starWidth: "20px"
+    });
+
 });
-   $(".rateYo").rateYo().on("rateyo.change", function (e, data) {
-    var rating = data.rating;
-    $(this).parent().find('.ratingnum').text(rating);
-
-   });
 
 
-});
-
-
-$(document).ready(function() {
+$(document).ready(function () {
+    
     $('#table-id').DataTable({
         "bFilter": false,
         "lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
         "dom":"tlip",
          'dom': "<'row'<'col-sm-12'tr>>" +
-         "<'row'<'col-sm-3'l>,<'col-sm-4'i>,<'col-sm-4'p>>",
+         "<'row'<'col-sm-3'l>,<'col-sm-3'i>,<'col-sm-5'p>>",
           "pagingType": "full_numbers",
           "oLanguage": {
 "sInfo": "Total Records: _TOTAL_"
@@ -113,14 +142,63 @@ $(document).ready(function() {
     'aoColumnDefs': [{
         'bSortable': false,
         'aTargets': [-1] /* 1st one, start by the right */
-    }]
+        }],
+        buttons: [{
+            extend: 'csv',
+            exportOptions: {
+                columns: 'th:not(:last-child)'
+            }
+        }]
+        
+      
+      
+       
 
      
 
     });
-  
+    $('#button_export_excel').click(() => {
+        $('#table-id').DataTable().buttons(0, 0).trigger()
+    });
+    const table = $('#table-id').DataTable();
+    table.on('draw', function () {
+        $('div[onload]').trigger('onload');
+    });
    
+    $('#table-id1').DataTable({
+        "bFilter": false,
+        "lengthMenu": [[6, 12, 24, 48, -1], [6, 12, 24, 48, "All"]],
+        "dom": "tlip",
+        'dom': "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-3'l>,<'col-sm-4'i>,<'col-sm-4'p>>",
+        "pagingType": "full_numbers",
+        "oLanguage": {
+            "sInfo": "Total Records: _TOTAL_"
+        }, 'language': {
+            'oPaginate': {
+                'sNext': '<i class="fa fa-chevron-right"></i>',
+                'sPrevious': '<i class="fa fa-chevron-left"></i>',
+                'sFirst': '<i class="fa fa-step-backward"></i>',
+                'sLast': '<i class="fa fa-step-forward"></i>',
 
+            }
+        },
+
+        "drawCallback": function (settings) {
+            $("#table-id").wrap("<div class='table-responsive'></div>");
+        },
+        'aoColumnDefs': [{
+            'bSortable': false,
+            'aTargets': [-1] /* 1st one, start by the right */
+        }]
+
+
+
+    });
+    const table1 = $('#table-id1').DataTable();
+    table1.on('draw', function () {
+        $('div[onload]').trigger('onload');
+    });
 
 } );
 
@@ -561,13 +639,13 @@ function addaddress() {
         var id = Math.floor(Math.random() * 10000);
         if (streat != "" && house != "") {
             if (phone == "") {
-                $("#addressul").append("<li class='ng - valid ng - dirty ng - touched'><label><input formcontrolname='address' name='address' type='radio' id='" + id + "' class='ng-valid ng-dirty ng-touched'/><span class='address-block'><b>Address:</b>" + streat + "," + house + "</span><span><b>Phone number: Null</b></span><span class='radio-pointer'></span></label></li>");
+                $("#addressul").append("<li class='ng - valid ng - dirty ng - touched'><label><input formcontrolname='address' checked name='address' type='radio' id='" + id + "' class='ng-valid ng-dirty ng-touched'/><span class='address-block'><b>Address:</b>" + streat + "," + house + "</span><span><b>Phone number: Null</b></span><span class='radio-pointer'></span></label></li>");
                 $('#addaddress2').hide();
                 $('#addaddress1').show();
 
             }
             else {
-                $("#addressul").append("<li class='ng - valid ng - dirty ng - touched'><label><input formcontrolname='address' name='address' type='radio' id='" + id + "' class='ng-valid ng-dirty ng-touched'/><span class='address-block'><b>Address:</b>" + streat + "," + house + "</span><span><b>Phone number:" + phone + "</b></span><span class='radio-pointer'></span></label></li>");
+                $("#addressul").append("<li class='ng - valid ng - dirty ng - touched'><label><input formcontrolname='address' checked name='address' type='radio' id='" + id + "' class='ng-valid ng-dirty ng-touched'/><span class='address-block'><b>Address:</b>" + streat + "," + house + "</span><span><b>Phone number:" + phone + "</b></span><span class='radio-pointer'></span></label></li>");
                 $('#addaddress2').hide();
                 $('#addaddress1').show();
             }

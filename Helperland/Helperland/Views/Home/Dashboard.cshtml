@@ -1,0 +1,371 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Helperland.Models.Data
+@inject IHttpContextAccessor HttpContextAccessor
+@model Helperland.ViewModel.CustomerViewModel
+@{
+    ViewBag.Title = "Dashboard";
+    //Layout = "~/Views/Shared/_Layout1.cshtml";
+    ViewBag.x = "";
+}
+<section class="container-fluid name">
+    <p>Welcome, <span>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")!</span></p>
+</section>
+
+
+<section class="container-fluid top-side">
+
+    <div class="wrapper">
+        <div class="sidebar">
+
+            <ul>
+                <li class="active">
+                    <a asp-action="Dashboard" asp-controller="Home">
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="Servicehistory" asp-controller="Home">
+                        Service History
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Service Schedule
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-action="Favouritepros" asp-controller="Home">
+                        Favourite Pros
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Invoices
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="">
+                        Notifications
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="Customer_service-history-table">
+        <div class="top11">
+            <h2>
+                Current Service Requests
+            </h2>
+            <form>
+                <button asp-action="bookservice" asp-controller="Home">
+                    Add new Service Requests
+                </button>
+            </form>
+        </div>
+
+        <table class="datatable" id="table-id">
+            <thead>
+                <tr class="table_th">
+                    <th>Service id </th>
+                    <th>Service Date  </th>
+                    <th>Service Provider  </th>
+                    <th>Payment  </th>
+                    <th>Action  </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                {
+
+                    var sd = serviceRequest.ServiceRequestId.ToString();
+
+                    var sd1 = int.Parse(sd);
+                    <tr>
+                        @{
+                            ViewBag.x = sd1;
+                        }
+                        <td class="tdserviceid tdp" style="cursor:pointer;"><span onclick="details1(@sd)">@serviceRequest.ServiceId</span></td>
+                        <td class="tddate"onclick="details1(@sd)">
+                            <img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png">@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                        </td>
+                        @if (serviceRequest.ServiceProviderId != null)
+                        {
+                            <td class="imgtd">
+                                <div class="imgcap"><img src="~/img/cap.png"></div>
+                                <div class="ratename">
+                                    <div class="tdp">@serviceRequest.ServiceProvider</div>
+                                    <div class="ratingtd">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star unchecked"></span>
+                                        <div class="ratingnum">4</div>
+                                    </div>
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td>
+                            <div class="pricetd">$@serviceRequest.TotalCost</div>
+                        </td>
+
+                        <td>
+                            <div class="reschedulecancle">
+                                <div class="reschedule">
+                                    <button onclick="Reschedule(@sd1)">Reschedule</button>
+
+                                </div>
+                                <div class="cancleservice">
+                                    <button  onclick="cancel(@sd1)">Cancel</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <div id="@sd" class="modal1">
+
+                        <!-- Modal content -->
+                        <div class="modal-content3">
+                            <span class="close" onclick="document.getElementById('@sd').style.display='none';"><img src="~/img/close.png"></span>
+                            <form asp-action="updaterequest" asp-controller="Home">
+                               
+                            </form>
+
+
+
+                            <div class="form">
+                                <div class="header3">
+
+                                    Service Details
+                                </div>
+
+                                    
+                                        <div class="dateandtime">
+                                            @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                        </div>
+                                        <div class="popupdiv">
+                                            Duration:<span>@serviceRequest.ServiceHours Hrs</span>
+                                        </div>
+                                        <hr style="width:100%;" />
+                                        <div class="popupdiv">
+                                            Service Id:<span>@serviceRequest.ServiceId</span>
+                                        </div>
+                                        <div class="popupdiv">
+                                            Extra:
+                                            @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+                                            {
+                                                if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
+                                                {
+
+                                                    if (serviceRequestExtra.ServiceExtraId == 1)
+                                                    {
+                                                        <span> Inside cabinets</span>
+                                                    }
+                                                    else if (serviceRequestExtra.ServiceExtraId == 2)
+                                                    {
+                                                        <span>Inside fridge</span>
+                                                    }
+                                                    else if (serviceRequestExtra.ServiceExtraId == 3)
+                                                    {
+                                                        <span> Inside oven</span>
+                                                    }
+                                                    else if (serviceRequestExtra.ServiceExtraId == 4)
+                                                    {
+                                                        <span> Laundry wash & dry</span>
+                                                    }
+                                                    else if (serviceRequestExtra.ServiceExtraId == 5)
+                                                    {
+                                                        <span> Interior windows</span>
+                                                    }
+
+                                                }
+
+                                            }
+
+
+                                        </div>
+                                        <div class="popupdiv">
+                                            Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
+                                        </div>
+                                        <hr style="width:100%;" />
+                                        @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
+                                        {
+                                            if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                            {
+                                                <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
+                                                if (serviceRequestAddress.Mobile != null)
+                                                {
+                                                    <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
+                                                }
+                                                if (serviceRequestAddress.Email != null)
+                                                {
+                                                    <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
+                                                }
+                                            }
+                                        }
+
+                                        <hr style="width:100%;" />
+                                        <div class="popupdiv">Comments</div>
+                                        @if (serviceRequest.HasPets == true)
+                                        {
+                                            <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
+                                        }
+                                  
+                                    
+                               
+                                    <div class="reschedulecancle">
+                                        <div class="reschedule">
+                                            <button onclick="Reschedule(@sd1)">Reschedule</button>
+
+                                        </div>
+                                        <div class="cancleservice">
+                                            <button onclick="cancel(@sd1)">Cancel</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                        </div>
+
+                    </div>
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+</section>
+
+
+
+
+
+
+<div id="Reschedule" class="modal1">
+
+    <!-- Modal content -->
+    <div class="modal-content1">
+        <span class="close" onclick="document.getElementById('Reschedule').style.display='none';"><img src="~/img/close.png"></span>
+        <div class="form">
+
+            <div class="header">
+                Reschedule Service Request
+
+            </div>
+            <form asp-action="updaterequest" asp-controller="Home">
+
+                <div class="element form-group icon-textbox right">
+                    <span style="color:#646464;font-size:16px; font-family:'Roboto',sans-serif;"> Select New Date & Time</span>
+                </div>
+                <input asp-for="Cancelrequestid" id="hiddenserviceid" type="hidden" value="" />
+                <div class="form-group calculator-date-time flex-1 justify-content-center">
+                    <div class="input-wrapper">
+
+                        <input asp-for="date" class="form-control date1" id="txtServiceStartDate" placeholder="DD/MM/YYYY" type="text">
+                    </div>
+
+                    <select asp-for="time" class="time" id="timeselect" formcontrolname="ServiceTime">
+                        <option value="08:00 am">8:00</option>
+                        <option value="08:30 am">8:30</option>
+                        <option value="09:00 am">9:00</option>
+                        <option value="09:30 am">9:30</option>
+                        <option value="10:00 am">10:00</option>
+                        <option value="10:30 am">10:30</option>
+                        <option value="11:00 am">11:00</option>
+                        <option value="11:30 am">11:30</option>
+                        <option value="12:00 pm">12:00</option>
+                        <option value="12:30 pm">12:30</option>
+                        <option value="01:00 pm">13:00</option>
+                        <option value="01:30 pm">13:30</option>
+                        <option value="02:00 pm">14:00</option>
+                        <option value="02:30 pm">14:30</option>
+                        <option value="03:00 pm">15:00</option>
+                        <option value="03:30 pm">15:30</option>
+                        <option value="04:00 pm">16:00</option>
+                        <option value="04:30 pm">16:30</option>
+                        <option value="05:00 pm">17:00</option>
+                        <option value="05:30 pm">17:30</option>
+                        <option value="06:00 pm">18:00</option>
+                    </select>
+                </div>
+                <div class="element">
+                    <button type="submit">Update</button>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+</div>
+
+<div id="cancel" class="modal1">
+
+    <!-- Modal content -->
+    <div class="modal-content1">
+        <span class="close" onclick="document.getElementById('cancel').style.display='none';"><img src="~/img/close.png"></span>
+        <div class="form">
+
+            <div class="header">
+                Cancel Service Request
+            </div>
+            <form asp-action="cancelrequest" asp-controller="Home">
+
+                <div class="element form-group icon-textbox right">
+                    <span style="color:#646464;font-size:16px; font-family:'Roboto',sans-serif;"> Are you sure you want to Cancel this Service Request?</span>
+                </div>
+                <input asp-for="Cancelrequestid" id="hiddenserviceid1" type="hidden" value="" />
+                <div class="element">
+                    <button type="submit">Cancel</button>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript" src="~/JS/main.js"></script>
+<script>
+    function cancel(x)
+    {
+        var xy = String(x);
+        document.getElementById(xy).style.display = 'none';
+        document.getElementById('cancel').style.display = 'block';
+        document.getElementById('hiddenserviceid1').value = x;
+
+
+    }
+    function Reschedule(x)
+    {
+        var xy = String(x);
+        document.getElementById(xy).style.display = 'none';
+        document.getElementById('Reschedule').style.display = 'block';
+        document.getElementById('hiddenserviceid').value = x;
+        
+        
+    }
+    function details1(x)
+    {
+        
+        document.getElementById(x).style.display = 'block';
+        document.getElementById('hiddenserviceid').value = x;
+     
+    }
+   
+
+</script>

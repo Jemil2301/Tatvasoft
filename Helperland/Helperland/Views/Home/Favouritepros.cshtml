@@ -1,0 +1,237 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Helperland.Models.Data
+@using System.Collections;
+@inject IHttpContextAccessor HttpContextAccessor
+@model Helperland.ViewModel.CustomerViewModel
+@{
+    ViewBag.Title = "Favourite Pros";
+    //Layout = "~/Views/Shared/_Layout1.cshtml";
+    ViewBag.x = "";
+}
+<section class="container-fluid name">
+    <p>Welcome, <span>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")!</span></p>
+</section>
+
+
+
+<section class="container-fluid top-side">
+
+    <div class="wrapper">
+        <div class="sidebar">
+
+            <ul>
+                <li>
+                    <a asp-action="Dashboard" asp-controller="Home">
+                        Dashbord
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="Servicehistory" asp-controller="Home">
+                        Service History
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Service Schedule
+                    </a>
+                </li>
+
+                <li class="active">
+                    <a asp-action="Favouritepros" asp-controller="Home">
+                        Favourite Pros
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Invoices
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="">
+                        Notifications
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="Customer_service-history-table">
+       
+        <table class="dataTable Favouritepros cards" id="table-id1">
+            <thead style="display:none;">
+                <tr>
+                    <th>Service Provider Name</th>
+                    <th>Total Cleaning</th>
+                    <th>status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var arlist = new ArrayList();
+                   
+                }
+                @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                {
+                    var totalservicecount = 0;
+                    var checkblkfav = 0;
+                    var sp_count = 0;
+                    decimal sp_avg = 0;
+                    var ratingidname = serviceRequest.ServiceRequestId.ToString() + 'r';
+                    var ratingidname1 = serviceRequest.ServiceRequestId.ToString() + "r1";
+                    if (arlist.Contains(serviceRequest.ServiceProviderId))
+                    {
+                    }
+                    else
+                    {
+                        arlist.Add(serviceRequest.ServiceProviderId);
+                        <tr >
+
+                            <td class="imgtd" style=" flex-direction: column;">
+                                <div class="imgcap" style="padding:10px;"><img style="width: 60px;" src="~/img/cap.png"></div>
+                                <div class="ratename">
+                                    @foreach (User user in Model.users)
+                                    {
+                                        @if (serviceRequest.ServiceProviderId == user.UserId)
+                                        {
+                                            <div class="tdp">@user.FirstName @user.LastName</div>
+                                        }
+                                    }
+                                    @foreach (Rating rating in Model.ratings)
+                                    {
+                                        if (serviceRequest.ServiceProviderId == rating.RatingTo)
+                                        {
+                                            sp_count = sp_count + 1;
+                                            sp_avg = sp_avg + rating.Ratings;
+                                        }
+
+                                    }
+                                    @if (sp_count >= 1)
+                                    {
+                                        sp_avg = sp_avg / sp_count;
+                                        sp_avg = Convert.ToDecimal(String.Format("{0:0.00}", sp_avg));
+                                    }
+                                    <div class="ratingtd" onload="avgrating('@ratingidname',@sp_avg);">
+
+                                        <span id=@ratingidname style="z-index:0;"></span>
+                                        <div class="ratingnum">@sp_avg</div>
+                                    </div>
+                                    
+                                </div>
+                            </td>
+                            <td>
+                            @foreach (ServiceRequest sr1 in Model.sr)
+                            {
+                                if (serviceRequest.ServiceProviderId == sr1.ServiceProviderId)
+                                {
+                                    totalservicecount = totalservicecount + 1;
+                                }
+                            }
+                            @totalservicecount Cleanings</td>
+       
+                            <td>
+                                @foreach (FavoriteAndBlocked fbb in Model.favoriteAndBlockeds)
+                                {
+                                    if (fbb.TargetUserId == serviceRequest.ServiceProviderId && fbb.IsFavorite == true && fbb.IsBlocked == false)
+                                    {
+                                        <form asp-action="unfavorite">
+                                            <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                            <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+                                            <div class="block_fav">
+                                                <button type="submit" class="fav">UnFavourite</button>
+
+                                            </div>
+
+                                        </form>
+                                        checkblkfav = 1;
+                                    }
+                                    else if (fbb.TargetUserId == serviceRequest.ServiceProviderId && fbb.IsBlocked == true && fbb.IsFavorite == false)
+                                    {
+                                        <form asp-action="unfavorite">
+                                            <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                            <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+                                            <div class="block_fav">
+                                                <button type="submit" class="block">Unblock</button>
+
+                                            </div>
+                                        </form>
+                                        checkblkfav = 1;
+                                    }
+                                    else if (fbb.TargetUserId == serviceRequest.ServiceProviderId && fbb.IsBlocked == false && fbb.IsFavorite == false)
+                                    {
+                                        <div class="block_fav">
+                                            <div>
+                                                <form asp-action="makeFavorite">
+                                                    <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                                    <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+                                                    <button type="submit" class="fav">Favourite</button>
+                                                </form>
+                                            </div>
+                                            <div>
+                                                <form asp-action="makeblock">
+                                                    <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                                    <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+
+                                                    <button class="block">Block</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        checkblkfav = 1;
+                                    }
+                                   
+                                }
+                                @if (checkblkfav == 0)
+                                {
+                                    <div class="block_fav">
+                                        <div>
+                                            <form asp-action="makeFavorite">
+                                                <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                                <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+
+                                                <button type="submit" class="fav">Favourite</button>
+                                            </form>
+                                        </div>
+                                        <div>
+
+                                            <form asp-action="makeblock">
+                                                <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                                <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+
+                                                <button class="block">Block</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                }
+
+                            </td>
+                        </tr>
+                    }
+                }
+
+
+
+
+            </tbody>
+        </table>
+    </div>
+
+
+</section>
+<script type="text/javascript" src="~/JS/main.js"></script>
+<script>$(document).ready(function () {
+        $('div[onload]').trigger('onload');
+    });
+    function avgrating(id, num) {
+        $(document).ready(function () {
+
+            $("#" + id).rateYo({
+                rating: num,
+                halfStar: true,
+                readOnly: true,
+                starWidth: "20px"
+            });
+        });
+    }</script>

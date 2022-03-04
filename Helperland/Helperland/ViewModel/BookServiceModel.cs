@@ -10,6 +10,7 @@ namespace Helperland.ViewModel
 {
     public class BookServiceModel:LoginForgot
     {
+       
         public ZipcodeModel zipcodeModel { get; set; }
         public ScheduleandplanModel scheduleandplanModel { get; set; }
         public IEnumerable<UserAddress> userAddress { get; set; }
