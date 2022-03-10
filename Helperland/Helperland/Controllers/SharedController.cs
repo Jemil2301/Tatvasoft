@@ -79,8 +79,10 @@ namespace Helperland.Controllers
 
                     if (details.FirstOrDefault().IsApproved) 
                     {
+                      
+                        HttpContext.Session.SetInt32("UserId", details.FirstOrDefault().UserId);
                         HttpContext.Session.SetString("FirstName", details.FirstOrDefault().FirstName);
-                        return RedirectToAction("Welcome", "Home");
+                        return RedirectToAction("spnewservicerequests", "Home");
                     
                     }
                     else {
@@ -90,6 +92,7 @@ namespace Helperland.Controllers
                     }
                     
                 }
+                
                 
             }
             else

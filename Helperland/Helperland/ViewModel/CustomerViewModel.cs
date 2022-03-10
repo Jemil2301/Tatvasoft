@@ -23,6 +23,7 @@ namespace Helperland.ViewModel
         public String friendly { get; set; }
         public String quality { get; set; }
         public IEnumerable<FavoriteAndBlocked> favoriteAndBlockeds { get; set; }
+        public IEnumerable<FavoriteAndBlocked> favoriteAndBlockeds1 { get; set; }
         public int userid { get; set; }
         public int spid { get; set; }
 

@@ -1,0 +1,186 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Helperland.Models.Data
+@inject IHttpContextAccessor HttpContextAccessor
+@model Helperland.ViewModel.SPViewModel
+@{
+    ViewBag.Title = "My Ratings";
+}
+<section class="container-fluid name">
+    <p>Welcome, <span>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")!</span></p>
+</section>
+
+<section class="container-fluid top-side">
+
+    <div class="wrapper">
+        <div class="sidebar">
+
+            <ul>
+                <li>
+
+                    <a href="">
+                        Dashbord
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spnewservicerequests" asp-controller="Home">
+                        New Service Requests
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spupcomingrequests" asp-controller="Home">
+                        Upcoming Services
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Service Schedule
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spservicehistory" asp-controller="Home">
+                        Service History
+                    </a>
+                </li>
+                <li class="active">
+                    <a asp-action="spmyratings" asp-controller="Home">
+                        My Rating
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spblockcustomer" asp-controller="Home">
+                        Block Customer
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <div class="Customer_service-history-table">
+        <div class="top11">
+            <label>
+
+                <span>Rating</span>
+                <select class="form-select ng-pristine ng-valid ng-touched" id="table-filter">
+                    <option selected="" value="0">All </option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Very Good">Very Good</option>
+                    <option value=" Good">Good</option>
+                    <option value="Poor">Poor</option>
+                    <option value="Very Poor">Very Poor </option>
+                </select>
+            </label>
+            <!--<div class="sort">
+        Sorting<img src="./img/filter.png">
+
+           </div>-->
+        </div>
+
+        <table class="dataTable Favouritepros1 cards" id="table-id3">
+            <thead style="display:none;">
+                <tr>
+
+                    <th>y</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Rating rating in Model.ratings)
+                {
+                    var ratingidname = rating.RatingId.ToString() + "r1";
+                    <tr class="col-sm-3">
+                        <td>
+                            <div class="d-flex ratingtd1">
+                                <div class="rating1">
+                                    @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                                    {
+                                        if (rating.ServiceRequestId == serviceRequest.ServiceRequestId)
+                                        {
+                                            <span>@serviceRequest.ServiceId</span>
+                                        }
+                                    }
+
+                                    <br>
+                                    @foreach (User user in Model.users)
+                                    {
+                                        if (rating.RatingFrom == user.UserId)
+                                        {
+                                            <strong>@user.FirstName @user.LastName</strong>
+                                        }
+                                    }
+
+
+                                </div>
+                                @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                                {
+                                    if (rating.ServiceRequestId == serviceRequest.ServiceRequestId)
+                                    {
+                            <div class="rating2"><img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png">@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")</div>
+                                    }
+                                }<div class="rating3">
+                                        <strong>ratings</strong>
+                                        <div class="ratingtd" onload="avgrating('@ratingidname',@rating.Ratings)">
+                                            <span id=@ratingidname style="z-index:0;"></span>
+                                            @if (rating.Ratings >= 4)
+                                            {
+                                                <div class="ratingnum">Excellent</div>
+                                            }
+                                            else if (rating.Ratings >= 3 && rating.Ratings < 4)
+                                            {
+                                                <div class="ratingnum">Very Good</div>
+                                            }
+                                            else if (rating.Ratings >= 2 && rating.Ratings < 3)
+                                            {
+                                                <div class="ratingnum"> Good</div>
+                                            }
+                                            else if (rating.Ratings >= 1 && rating.Ratings < 2)
+                                            {
+                                                <div class="ratingnum">Poor</div>
+                                            }
+                                            else if (rating.Ratings < 1)
+                                            {
+                                        <div class="ratingnum">Very Poor</div>
+                                            }
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            <hr style="width:100%;">
+                            <br>
+                            <div class="commen">
+                                <strong>Customer's Comments</strong><br>
+                                <span>@rating.Comments</span>
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+                
+            </tbody>
+        </table>
+    </div>
+
+ 
+</section>  
+<script type="text/javascript" src="~/JS/main.js"></script>
+<script>
+    $(document).ready(function () {
+        $('div[onload]').trigger('onload');
+
+    });
+
+
+
+    function avgrating(id, num) {
+
+        $(document).ready(function () {
+            $("#" + id).rateYo({
+                rating: num,
+                halfStar: true,
+                readOnly: true,
+                starWidth: "20px",
+
+            });
+
+        });
+    }
+</script>

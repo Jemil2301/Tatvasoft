@@ -1,0 +1,814 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Helperland.Models.Data
+@inject IHttpContextAccessor HttpContextAccessor
+@model Helperland.ViewModel.SPViewModel
+@{
+    ViewBag.Title = "New Service Request";
+    var useridofsp = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
+}
+<section class="container-fluid name">
+    <p>Welcome, <span>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")!</span></p>
+</section>
+
+
+<section class="container-fluid top-side">
+
+    <div class="wrapper">
+        <div class="sidebar">
+
+            <ul>
+                <li>
+                    <a href="">
+                        Dashbord
+                    </a>
+                </li>
+                <li class="active">
+                    <a asp-action="spnewservicerequests" asp-controller="Home">
+                        New Service Requests
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spupcomingrequests" asp-controller="Home">
+                        Upcoming Services
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Service Schedule
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spservicehistory" asp-controller="Home">
+                        Service History
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spmyratings" asp-controller="Home">
+                        My Rating
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spblockcustomer" asp-controller="Home">
+                        Block Customer
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="Customer_service-history-table">
+        <div class="top11">
+            <label>
+                <input id="includepets" type="checkbox" name="haspets">
+                <span>Include Pet at Home</span>
+            </label>
+
+        </div>
+        <div class="sucess col-lg-12" style="justify-content: center; align-items: center; color: white; opacity:0.5; background-color: #a83c34; border-color: #d6e9c6; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; display: none;" id="_sucess5">
+            <span class="close" onclick="document.getElementById('_sucess5').style.display='none';">x</span>
+            Another service request  has already been assigned which has time overlap with this service request. You can’t pick this one!
+
+
+        </div>
+        <table class="datatable" id="table-id">
+            <thead>
+                <tr class="table_th">
+                    <th>Service ID</th>
+                    <th>Service date  </th>
+                    <th>Customer details  </th>
+                    <th>Payment </th>
+                    <th>Time conflict</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="includepets1" style="display:none;">
+
+                @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                {
+                    var sxp = 0;
+                    @foreach (FavoriteAndBlocked favorite1 in Model.favoriteAndBlockeds1)
+                    {
+                        if (favorite1.UserId == useridofsp)
+                        {
+                            sxp = 1;
+                        }
+
+                    }
+                    if (sxp == 1)
+                    {
+                        @foreach (FavoriteAndBlocked favorite in Model.favoriteAndBlockeds1)
+                        {
+
+                            if (favorite.TargetUserId == serviceRequest.UserId && favorite.IsBlocked == false)
+                            {
+
+                                @foreach (FavoriteAndBlocked favoriteAndBlocked in Model.favoriteAndBlockeds)
+                                {
+                                    if (favoriteAndBlocked.UserId == serviceRequest.UserId && favoriteAndBlocked.IsBlocked == true)
+                                    {
+                                    }
+
+                                    else
+                                    {
+
+                                        var sd = serviceRequest.ServiceRequestId.ToString();
+                                        <tr>
+                                            <td class="tdserviceid tdp" onclick="details1(@sd)">@serviceRequest.ServiceId</td>
+                                            <td class="tddate" onclick="details1(@sd)">
+                                                <img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png">@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                            </td>
+                                            <td class="custdet" onclick="details1(@sd)">
+                                                @foreach (User user in Model.users)
+                                                {
+                                                    if (serviceRequest.UserId == user.UserId)
+                                                    {
+                                                        <span> @user.FirstName @user.LastName</span>
+                                                    }
+                                                }
+
+                                                <br>
+                                                <img src="~/img/layer-719.png">
+                                                @foreach (ServiceRequestAddress serviceRequestAddress in Model.serviceRequestAddresses)
+                                                {
+                                                    if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                                    {
+                                                        <span>@serviceRequestAddress.AddressLine1, <br>@serviceRequestAddress.AddressLine2</span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="pricetd1">@serviceRequest.TotalCost</div>
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <div class="reschedulecancle">
+                                                    <div class="reschedule">
+                                                        <form asp-action="AcceptSr" asp-controller="Home">
+                                                            <input type="hidden" asp-for="srid" value=@serviceRequest.ServiceRequestId />
+                                                            <input type="hidden" asp-for="starttime" value=@serviceRequest.ServiceStartDate />
+                                                            <input type="hidden" asp-for="endtime" value=@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours + 1) />
+                                                            <button type="submit">Accept</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div id="@sd" class="modal1">
+
+                                            <!-- Modal content -->
+                                            <div class="modal-content3">
+                                                <span class="close" onclick="document.getElementById('@sd').style.display='none';"><img src="~/img/close.png"></span>
+                                                <form asp-action="updaterequest" asp-controller="Home">
+                                                </form>
+
+
+
+                                                <div class="form">
+                                                    <div class="header3">
+
+                                                        Service Details
+                                                    </div>
+
+
+                                                    <div class="dateandtime">
+                                                        @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                                    </div>
+                                                    <div class="popupdiv">
+                                                        Duration:<span>@serviceRequest.ServiceHours Hrs</span>
+                                                    </div>
+                                                    <hr style="width:100%;" />
+                                                    <div class="popupdiv">
+                                                        Service Id:<span>@serviceRequest.ServiceId</span>
+                                                    </div>
+                                                    <div class="popupdiv">
+                                                        Extra:
+                                                        @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+                                                        {
+                                                            if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
+                                                            {
+
+                                                                if (serviceRequestExtra.ServiceExtraId == 1)
+                                                                {
+                                                                    <span> Inside cabinets</span>
+                                                                }
+                                                                else if (serviceRequestExtra.ServiceExtraId == 2)
+                                                                {
+                                                                    <span>Inside fridge</span>
+                                                                }
+                                                                else if (serviceRequestExtra.ServiceExtraId == 3)
+                                                                {
+                                                                    <span> Inside oven</span>
+                                                                }
+                                                                else if (serviceRequestExtra.ServiceExtraId == 4)
+                                                                {
+                                                                    <span> Laundry wash & dry</span>
+                                                                }
+                                                                else if (serviceRequestExtra.ServiceExtraId == 5)
+                                                                {
+                                                                    <span> Interior windows</span>
+                                                                }
+
+                                                            }
+
+                                                        }
+
+
+                                                    </div>
+                                                    <div class="popupdiv">
+                                                        Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
+                                                    </div>
+                                                    <hr style="width:100%;" />
+                                                    @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
+                                                    {
+                                                        if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                                        {
+                                                            <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
+                                                            if (serviceRequestAddress.Mobile != null)
+                                                            {
+                                                                <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
+                                                            }
+                                                            if (serviceRequestAddress.Email != null)
+                                                            {
+                                                                <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
+                                                            }
+                                                        }
+                                                    }
+
+                                                    <hr style="width:100%;" />
+                                                    <div class="popupdiv">Comments</div>
+                                                    @if (serviceRequest.HasPets == true)
+                                                    {
+                                                        <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
+                                                    }
+
+
+
+                                                    <div class="reschedulecancle">
+                                                        <div class="reschedule">
+                                                            <form asp-action="AcceptSr" asp-controller="Home">
+                                                                <input type="hidden" asp-for="srid" value="@serviceRequest.ServiceRequestId" />
+                                                                <input type="hidden" asp-for="starttime" value=@serviceRequest.ServiceStartDate />
+                                                                <input type="hidden" asp-for="endtime" value=@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours) />
+                                                                <button type="submit">Accept</button>
+                                                            </form>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                        var sd = serviceRequest.ServiceRequestId.ToString();
+                        <tr>
+                            <td class="tdserviceid tdp" onclick="details1(@sd)">@serviceRequest.ServiceId</td>
+                            <td class="tddate" onclick="details1(@sd)">
+                                <img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png">@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                            </td>
+                            <td class="custdet" onclick="details1(@sd)">
+                                @foreach (User user in Model.users)
+                                {
+                                    if (serviceRequest.UserId == user.UserId)
+                                    {
+                                        <span> @user.FirstName @user.LastName</span>
+                                    }
+                                }
+
+                                <br>
+                                <img src="~/img/layer-719.png">
+                                @foreach (ServiceRequestAddress serviceRequestAddress in Model.serviceRequestAddresses)
+                                {
+                                    if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                    {
+                                        <span>@serviceRequestAddress.AddressLine1, <br>@serviceRequestAddress.AddressLine2</span>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                <div class="pricetd1">@serviceRequest.TotalCost</div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <div class="reschedulecancle">
+                                    <div class="reschedule">
+                                        <form asp-action="AcceptSr" asp-controller="Home">
+                                            <input type="hidden" asp-for="srid" value=@serviceRequest.ServiceRequestId />
+                                            <input type="hidden" asp-for="starttime" value=@serviceRequest.ServiceStartDate />
+                                            <input type="hidden" asp-for="endtime" value=@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours + 1) />
+                                            <button type="submit">Accept</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <div id="@sd" class="modal1">
+
+                            <!-- Modal content -->
+                            <div class="modal-content3">
+                                <span class="close" onclick="document.getElementById('@sd').style.display='none';"><img src="~/img/close.png"></span>
+                                <form asp-action="updaterequest" asp-controller="Home">
+                                </form>
+
+
+
+                                <div class="form">
+                                    <div class="header3">
+
+                                        Service Details
+                                    </div>
+
+
+                                    <div class="dateandtime">
+                                        @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                    </div>
+                                    <div class="popupdiv">
+                                        Duration:<span>@serviceRequest.ServiceHours Hrs</span>
+                                    </div>
+                                    <hr style="width:100%;" />
+                                    <div class="popupdiv">
+                                        Service Id:<span>@serviceRequest.ServiceId</span>
+                                    </div>
+                                    <div class="popupdiv">
+                                        Extra:
+                                        @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+                                        {
+                                            if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
+                                            {
+
+                                                if (serviceRequestExtra.ServiceExtraId == 1)
+                                                {
+                                                    <span> Inside cabinets</span>
+                                                }
+                                                else if (serviceRequestExtra.ServiceExtraId == 2)
+                                                {
+                                                    <span>Inside fridge</span>
+                                                }
+                                                else if (serviceRequestExtra.ServiceExtraId == 3)
+                                                {
+                                                    <span> Inside oven</span>
+                                                }
+                                                else if (serviceRequestExtra.ServiceExtraId == 4)
+                                                {
+                                                    <span> Laundry wash & dry</span>
+                                                }
+                                                else if (serviceRequestExtra.ServiceExtraId == 5)
+                                                {
+                                                    <span> Interior windows</span>
+                                                }
+
+                                            }
+
+                                        }
+
+
+                                    </div>
+                                    <div class="popupdiv">
+                                        Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
+                                    </div>
+                                    <hr style="width:100%;" />
+                                    @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
+                                    {
+                                        if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                        {
+                                            <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
+                                            if (serviceRequestAddress.Mobile != null)
+                                            {
+                                                <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
+                                            }
+                                            if (serviceRequestAddress.Email != null)
+                                            {
+                                                <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
+                                            }
+                                        }
+                                    }
+
+                                    <hr style="width:100%;" />
+                                    <div class="popupdiv">Comments</div>
+                                    @if (serviceRequest.HasPets == true)
+                                    {
+                                        <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
+                                    }
+
+
+
+                                    <div class="reschedulecancle">
+                                        <div class="reschedule">
+                                            <form asp-action="AcceptSr" asp-controller="Home">
+                                                <input type="hidden" asp-for="srid" value="@serviceRequest.ServiceRequestId" />
+                                                <input type="hidden" asp-for="starttime" value=@serviceRequest.ServiceStartDate />
+                                                <input type="hidden" asp-for="endtime" value=@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours) />
+                                                <button type="submit">Accept</button>
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                }
+
+            </tbody>
+            <tbody id="witoutpets">
+
+                @foreach (ServiceRequest serviceRequest in Model.serviceRequestswithoutpets)
+                {
+                    var sxp = 0;
+                    @foreach (FavoriteAndBlocked favorite1 in Model.favoriteAndBlockeds1)
+                    {
+                        if (favorite1.UserId == useridofsp)
+                        {
+                            sxp = 1;
+                        }
+
+                    }
+                    if (sxp == 1)
+                    {
+                        @foreach (FavoriteAndBlocked favorite in Model.favoriteAndBlockeds1)
+                        {
+                            if (favorite.TargetUserId == serviceRequest.UserId && favorite.IsBlocked == false)
+                            {
+
+                                @foreach (FavoriteAndBlocked favoriteAndBlocked in Model.favoriteAndBlockeds)
+                                {
+                                    if (favoriteAndBlocked.UserId == serviceRequest.UserId && favoriteAndBlocked.IsBlocked == true)
+                                    {
+                                    }
+
+
+                                    else
+                                    {
+                                        var sd1 = serviceRequest.ServiceRequestId.ToString();
+                                        <tr>
+                                            <td class="tdserviceid tdp" onclick="details1(@sd1)">@serviceRequest.ServiceId</td>
+                                            <td class="tddate" onclick="details1(@sd1)">
+                                                <img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png">@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                            </td>
+                                            <td class="custdet" onclick="details1(@sd1)">
+                                                @foreach (User user in Model.users)
+                                                {
+                                                    if (serviceRequest.UserId == user.UserId)
+                                                    {
+                                                        <span> @user.FirstName @user.LastName</span>
+                                                    }
+                                                }
+
+                                                <br>
+                                                <img src="~/img/layer-719.png">
+                                                @foreach (ServiceRequestAddress serviceRequestAddress in Model.serviceRequestAddresses)
+                                                {
+                                                    if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                                    {
+                                                        <span>@serviceRequestAddress.AddressLine1, <br>@serviceRequestAddress.AddressLine2</span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="pricetd1">@serviceRequest.TotalCost</div>
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <div class="reschedulecancle">
+                                                    <div class="reschedule">
+                                                        <form asp-action="AcceptSr" asp-controller="Home">
+                                                            <input type="hidden" asp-for="srid" value="@serviceRequest.ServiceRequestId" />
+                                                            <input type="hidden" asp-for="starttime" value=@serviceRequest.ServiceStartDate />
+                                                            <input type="hidden" asp-for="endtime" value=@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours) />
+                                                            <button type="submit">Accept</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div id="@sd1" class="modal1">
+
+                                            <!-- Modal content -->
+                                            <div class="modal-content3">
+                                                <span class="close" onclick="document.getElementById('@sd1').style.display='none';"><img src="~/img/close.png"></span>
+                                                <form asp-action="updaterequest" asp-controller="Home">
+                                                </form>
+
+
+
+                                                <div class="form">
+                                                    <div class="header3">
+
+                                                        Service Details
+                                                    </div>
+
+
+                                                    <div class="dateandtime">
+                                                        @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                                    </div>
+                                                    <div class="popupdiv">
+                                                        Duration:<span>@serviceRequest.ServiceHours Hrs</span>
+                                                    </div>
+                                                    <hr style="width:100%;" />
+                                                    <div class="popupdiv">
+                                                        Service Id:<span>@serviceRequest.ServiceId</span>
+                                                    </div>
+                                                    <div class="popupdiv">
+                                                        Extra:
+                                                        @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+                                                        {
+                                                            if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
+                                                            {
+
+                                                                if (serviceRequestExtra.ServiceExtraId == 1)
+                                                                {
+                                                                    <span> Inside cabinets</span>
+                                                                }
+                                                                else if (serviceRequestExtra.ServiceExtraId == 2)
+                                                                {
+                                                                    <span>Inside fridge</span>
+                                                                }
+                                                                else if (serviceRequestExtra.ServiceExtraId == 3)
+                                                                {
+                                                                    <span> Inside oven</span>
+                                                                }
+                                                                else if (serviceRequestExtra.ServiceExtraId == 4)
+                                                                {
+                                                                    <span> Laundry wash & dry</span>
+                                                                }
+                                                                else if (serviceRequestExtra.ServiceExtraId == 5)
+                                                                {
+                                                                    <span> Interior windows</span>
+                                                                }
+
+                                                            }
+
+                                                        }
+
+
+                                                    </div>
+                                                    <div class="popupdiv">
+                                                        Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
+                                                    </div>
+                                                    <hr style="width:100%;" />
+                                                    @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
+                                                    {
+                                                        if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                                        {
+                                                            <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
+                                                            if (serviceRequestAddress.Mobile != null)
+                                                            {
+                                                                <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
+                                                            }
+                                                            if (serviceRequestAddress.Email != null)
+                                                            {
+                                                                <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
+                                                            }
+                                                        }
+                                                    }
+
+                                                    <hr style="width:100%;" />
+                                                    <div class="popupdiv">Comments</div>
+                                                    @if (serviceRequest.HasPets == true)
+                                                    {
+                                                        <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
+                                                    }
+
+
+
+                                                    <div class="reschedulecancle">
+                                                        <div class="reschedule">
+                                                            <form asp-action="AcceptSr" asp-controller="Home">
+                                                                <input type="hidden" asp-for="srid" value="@serviceRequest.ServiceRequestId" />
+                                                                <input type="hidden" asp-for="starttime" value=@serviceRequest.ServiceStartDate />
+                                                                <input type="hidden" asp-for="endtime" value=@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours) />
+                                                                <button type="submit">Accept</button>
+                                                            </form>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var sd1 = serviceRequest.ServiceRequestId.ToString();
+                        <tr>
+                            <td class="tdserviceid tdp" onclick="details1(@sd1)">@serviceRequest.ServiceId</td>
+                            <td class="tddate" onclick="details1(@sd1)">
+                                <img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png">@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                            </td>
+                            <td class="custdet" onclick="details1(@sd1)">
+                                @foreach (User user in Model.users)
+                                {
+                                    if (serviceRequest.UserId == user.UserId)
+                                    {
+                                        <span> @user.FirstName @user.LastName</span>
+                                    }
+                                }
+
+                                <br>
+                                <img src="~/img/layer-719.png">
+                                @foreach (ServiceRequestAddress serviceRequestAddress in Model.serviceRequestAddresses)
+                                {
+                                    if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                    {
+                                        <span>@serviceRequestAddress.AddressLine1, <br>@serviceRequestAddress.AddressLine2</span>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                <div class="pricetd1">@serviceRequest.TotalCost</div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <div class="reschedulecancle">
+                                    <div class="reschedule">
+                                        <form asp-action="AcceptSr" asp-controller="Home">
+                                            <input type="hidden" asp-for="srid" value="@serviceRequest.ServiceRequestId" />
+                                            <input type="hidden" asp-for="starttime" value=@serviceRequest.ServiceStartDate />
+                                            <input type="hidden" asp-for="endtime" value=@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours) />
+                                            <button type="submit">Accept</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <div id="@sd1" class="modal1">
+
+                            <!-- Modal content -->
+                            <div class="modal-content3">
+                                <span class="close" onclick="document.getElementById('@sd1').style.display='none';"><img src="~/img/close.png"></span>
+                                <form asp-action="updaterequest" asp-controller="Home">
+                                </form>
+
+
+
+                                <div class="form">
+                                    <div class="header3">
+
+                                        Service Details
+                                    </div>
+
+
+                                    <div class="dateandtime">
+                                        @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                    </div>
+                                    <div class="popupdiv">
+                                        Duration:<span>@serviceRequest.ServiceHours Hrs</span>
+                                    </div>
+                                    <hr style="width:100%;" />
+                                    <div class="popupdiv">
+                                        Service Id:<span>@serviceRequest.ServiceId</span>
+                                    </div>
+                                    <div class="popupdiv">
+                                        Extra:
+                                        @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+                                        {
+                                            if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
+                                            {
+
+                                                if (serviceRequestExtra.ServiceExtraId == 1)
+                                                {
+                                                    <span> Inside cabinets</span>
+                                                }
+                                                else if (serviceRequestExtra.ServiceExtraId == 2)
+                                                {
+                                                    <span>Inside fridge</span>
+                                                }
+                                                else if (serviceRequestExtra.ServiceExtraId == 3)
+                                                {
+                                                    <span> Inside oven</span>
+                                                }
+                                                else if (serviceRequestExtra.ServiceExtraId == 4)
+                                                {
+                                                    <span> Laundry wash & dry</span>
+                                                }
+                                                else if (serviceRequestExtra.ServiceExtraId == 5)
+                                                {
+                                                    <span> Interior windows</span>
+                                                }
+
+                                            }
+
+                                        }
+
+
+                                    </div>
+                                    <div class="popupdiv">
+                                        Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
+                                    </div>
+                                    <hr style="width:100%;" />
+                                    @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
+                                    {
+                                        if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                        {
+                                            <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
+                                            if (serviceRequestAddress.Mobile != null)
+                                            {
+                                                <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
+                                            }
+                                            if (serviceRequestAddress.Email != null)
+                                            {
+                                                <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
+                                            }
+                                        }
+                                    }
+
+                                    <hr style="width:100%;" />
+                                    <div class="popupdiv">Comments</div>
+                                    @if (serviceRequest.HasPets == true)
+                                    {
+                                        <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
+                                    }
+
+
+
+                                    <div class="reschedulecancle">
+                                        <div class="reschedule">
+                                            <form asp-action="AcceptSr" asp-controller="Home">
+                                                <input type="hidden" asp-for="srid" value="@serviceRequest.ServiceRequestId" />
+                                                <input type="hidden" asp-for="starttime" value=@serviceRequest.ServiceStartDate />
+                                                <input type="hidden" asp-for="endtime" value=@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours) />
+                                                <button type="submit">Accept</button>
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    </section>
+    <script type="text/javascript" src="~/JS/main.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#includepets').change(function () {
+            if ($('#includepets').is(":checked")) {
+                $("#includepets1").show();
+                $("#witoutpets").hide();
+            }
+            else {
+                $("#witoutpets").show();
+                $("#includepets1").hide();
+            }
+        });
+
+
+    });
+    function details1(x) {
+
+        document.getElementById(x).style.display = 'block';
+        document.getElementById('hiddenserviceid').value = x;
+
+    }
+
+</script>
+@if (TempData["conflict"] != null)
+{
+<script>
+    document.getElementById('_sucess5').style.display = 'block'
+</script>
+}

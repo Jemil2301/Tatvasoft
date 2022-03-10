@@ -151,20 +151,52 @@ $(document).ready(function () {
         }]
         
       
-      
-       
-
-     
-
     });
     $('#button_export_excel').click(() => {
         $('#table-id').DataTable().buttons(0, 0).trigger()
     });
+    
     const table = $('#table-id').DataTable();
     table.on('draw', function () {
         $('div[onload]').trigger('onload');
     });
-   
+
+    $('#table-id2').DataTable({
+        "bFilter": false,
+        "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        "dom": "tlip",
+        'dom': "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-3'l>,<'col-sm-3'i>,<'col-sm-5'p>>",
+        "pagingType": "full_numbers",
+        "oLanguage": {
+            "sInfo": "Total Records: _TOTAL_"
+        }, 'language': {
+            'oPaginate': {
+                'sNext': '<i class="fa fa-chevron-right"></i>',
+                'sPrevious': '<i class="fa fa-chevron-left"></i>',
+                'sFirst': '<i class="fa fa-step-backward"></i>',
+                'sLast': '<i class="fa fa-step-forward"></i>',
+
+            }
+        },
+
+        "drawCallback": function (settings) {
+            $("#table-id").wrap("<div class='table-responsive'></div>");
+        },
+        'aoColumnDefs': [{
+            'bSortable': false,
+            'aTargets': [-1] /* 1st one, start by the right */
+        }],
+        buttons: [{
+            extend: 'csv'
+        }]
+
+    });
+    $('#button_export_excel1').click(() => {
+     
+        $('#table-id2').DataTable().buttons(0, 0).trigger()
+    });
+
     $('#table-id1').DataTable({
         "bFilter": false,
         "lengthMenu": [[6, 12, 24, 48, -1], [6, 12, 24, 48, "All"]],
@@ -200,7 +232,48 @@ $(document).ready(function () {
         $('div[onload]').trigger('onload');
     });
 
-} );
+
+
+    $('#table-id3').DataTable({
+        "bFilter": false,
+        "lengthMenu": [[3, 6, 12, 24, -1], [3, 6, 12, 24, "All"]],
+        "dom": "rtlip",
+        'dom': "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-3'l>,<'col-sm-3'i>,<'col-sm-5'p>>",
+        "pagingType": "full_numbers",
+        "oLanguage": {
+            "sInfo": "Total Records: _TOTAL_"
+        }, 'language': {
+            'oPaginate': {
+                'sNext': '<i class="fa fa-chevron-right"></i>',
+                'sPrevious': '<i class="fa fa-chevron-left"></i>',
+                'sFirst': '<i class="fa fa-step-backward"></i>',
+                'sLast': '<i class="fa fa-step-forward"></i>',
+
+            }
+        },
+
+        "drawCallback": function (settings) {
+            $("#table-id").wrap("<div class='table-responsive'></div>");
+            
+        },
+        "searching": true
+        
+
+
+    });
+    var tab = $("#table-id3").DataTable();
+    $('#table-filter').on('change', function () {
+        tab.search(this.value).draw();
+    });
+    const table2 = $('#table-id3').DataTable();
+    table2.on('draw', function () {
+        $('div[onload]').trigger('onload');
+    });
+    
+
+});
+
 
 
 $(document).ready(function () {

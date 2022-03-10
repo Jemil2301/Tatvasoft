@@ -162,3 +162,9 @@ F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Dashboard.cshtml
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Servicehistory.cshtml.g.cs
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\customerprofile.cshtml.g.cs
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Favouritepros.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\spnewservicerequests.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\spupcomingrequests.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\spservicehistory.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\spmyratings.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\spblockcustomer.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\SPprofile.cshtml.g.cs

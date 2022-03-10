@@ -95,27 +95,29 @@
                                 </li>
                                 </form>
                             }
-                                <li class="nav-item">
-                                    <a class="nav-link first-1" asp-controller="home" asp-action="Price">Price</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link first-1" href="#ourguarantee">Our Guarantee</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link first-1" href="#blog">Blog</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link first-1" asp-controller="home" asp-action="Contactus">Contact us</a>
-                                </li>
-                                <div class="border" style=" background-color: #e1e1e1; width: 1px; height: 35px;"></div>
-                                <li class="nav-item">
+                            <li class="nav-item">
+                                <a class="nav-link first-1" asp-controller="home" asp-action="Price">Price</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link first-1" href="#ourguarantee">Our Guarantee</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link first-1" href="#blog">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link first-1" asp-controller="home" asp-action="Contactus">Contact us</a>
+                            </li>
+                            <div class="border" style=" background-color: #e1e1e1; width: 1px; height: 35px;"></div>
+                            <li class="nav-item">
 
-                                    <a class="first-2"><img src="~/img/icon-notification.png"><span class="num">2</span></a>
-                                </li>
-                                <div class="border" style=" background-color: #e1e1e1; width: 1px; height: 35px;"></div>
-                                <li class="nav-item">
-                                    <a class="first-3"><img src="~/img/user(1).png"></a>
-                                </li>
+                                <a class="first-2"><img src="~/img/icon-notification.png"><span class="num">2</span></a>
+                            </li>
+                            <div class="border" style=" background-color: #e1e1e1; width: 1px; height: 35px;"></div>
+                            <li class="nav-item">
+                                <a class="first-3"><img src="~/img/user(1).png"></a>
+                            </li>
+                            @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserTypeId") == 1)
+                            {
                                 <li>
 
                                     <div class="btn-group dropstart">
@@ -136,8 +138,32 @@
                                         </ul>
                                     </div>
                                 </li>
+}
+                            else
+                            {
+                                <li>
+                                    <div class="btn-group dropstart">
+                                        <img class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" src="~/img/arrow.png">
 
-                            </ul>
+                                        <ul class="dropdown-menu mt-5">
+                                            <li class="username">
+                                                Welcome,<br>
+                                                <b>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")</b>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" title="My Dashboard">My Dashboard</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" title="My Settings" asp-action="SPprofile" asp-controller="Home">My Settings</a>
+                                            </li>
+                                            <li><a class="dropdown-item" asp-action="logout" asp-controller="Home">Log out</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                            }
+
+                        </ul>
                     </div>
                 </div>
                 <div class="scrolltop">

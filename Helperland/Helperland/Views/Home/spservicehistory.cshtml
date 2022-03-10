@@ -1,0 +1,234 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Helperland.Models.Data
+@inject IHttpContextAccessor HttpContextAccessor
+@model Helperland.ViewModel.SPViewModel
+@{
+    ViewBag.Title = "Service History";
+
+}
+<section class="container-fluid name">
+    <p>Welcome, <span>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")!</span></p>
+</section>
+
+
+<section class="container-fluid top-side">
+
+    <div class="wrapper">
+        <div class="sidebar">
+
+            <ul>
+                <li>
+                    <a href="">
+                        Dashbord
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spnewservicerequests" asp-controller="Home">
+                        New Service Requests
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spupcomingrequests" asp-controller="Home">
+                        Upcoming Services
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Service Schedule
+                    </a>
+                </li>
+                <li class="active">
+                    <a asp-action="spservicehistory" asp-controller="Home">
+                        Service History
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spmyratings" asp-controller="Home">
+                        My Rating
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spblockcustomer" asp-controller="Home">
+                        Block Customer
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="Customer_service-history-table">
+
+        <div class="top1">
+            <h2>
+                Service History
+            </h2>
+            <button id="button_export_excel1">
+                Export
+            </button>
+        </div>
+        <table class="datatable" id="table-id2">
+            <thead>
+                <tr class="table_th">
+                    <th>Service ID</th>
+                    <th>Service date  </th>
+                    <th>Customer details  </th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                {
+                    var sd = serviceRequest.ServiceRequestId.ToString();
+                    <tr>
+                        <td class="tdserviceid tdp" onclick="details1(@sd)">@serviceRequest.ServiceId</td>
+                        <td class="tddate" onclick="details1(@sd)">
+                            <img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png">@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                        </td>
+                        <td class="custdet" onclick="details1(@sd)">
+                            @foreach (User user in Model.users)
+                            {
+                                if (serviceRequest.UserId == user.UserId)
+                                {
+                                    <span> @user.FirstName @user.LastName</span>
+                                }
+                            }
+
+                            <br>
+                            <img src="~/img/layer-719.png">
+                            @foreach (ServiceRequestAddress serviceRequestAddress in Model.serviceRequestAddresses)
+                            {
+                                if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                {
+                                    <span>@serviceRequestAddress.AddressLine1, <br>@serviceRequestAddress.AddressLine2</span>
+                                }
+                            }
+                        </td>
+
+
+
+                    </tr>
+                    <div id="@sd" class="modal1">
+
+                        <!-- Modal content -->
+                        <div class="modal-content3">
+                            <span class="close" onclick="document.getElementById('@sd').style.display='none';"><img src="~/img/close.png"></span>
+                            <form asp-action="updaterequest" asp-controller="Home">
+                            </form>
+
+
+
+                            <div class="form">
+                                <div class="header3">
+
+                                    Service Details
+                                </div>
+
+
+                                <div class="dateandtime">
+                                    @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                </div>
+                                <div class="popupdiv">
+                                    Duration:<span>@serviceRequest.ServiceHours Hrs</span>
+                                </div>
+                                <hr style="width:100%;" />
+                                <div class="popupdiv">
+                                    Service Id:<span>@serviceRequest.ServiceId</span>
+                                </div>
+                                <div class="popupdiv">
+                                    Extra:
+                                    @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+                                    {
+                                        if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
+                                        {
+
+                                            if (serviceRequestExtra.ServiceExtraId == 1)
+                                            {
+                                                <span> Inside cabinets</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 2)
+                                            {
+                                                <span>Inside fridge</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 3)
+                                            {
+                                                <span> Inside oven</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 4)
+                                            {
+                                                <span> Laundry wash & dry</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 5)
+                                            {
+                                                <span> Interior windows</span>
+                                            }
+
+                                        }
+
+                                    }
+
+
+                                </div>
+                                <div class="popupdiv">
+                                    Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
+                                </div>
+                                <hr style="width:100%;" />
+                                @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
+                                {
+                                    if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                    {
+                                        <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
+                                        if (serviceRequestAddress.Mobile != null)
+                                        {
+                                            <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
+                                        }
+                                        if (serviceRequestAddress.Email != null)
+                                        {
+                                            <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
+                                        }
+                                    }
+                                }
+
+                                <hr style="width:100%;" />
+                                <div class="popupdiv">Comments</div>
+                                @if (serviceRequest.HasPets == true)
+                                {
+                                    <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
+                                }
+                                else
+                                {
+                                    <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
+                                }
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+</section>
+<script type="text/javascript" src="~/JS/main.js"></script>
+<script>
+
+    function details1(x) {
+
+        document.getElementById(x).style.display = 'block';
+        document.getElementById('hiddenserviceid').value = x;
+
+    }
+
+</script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>

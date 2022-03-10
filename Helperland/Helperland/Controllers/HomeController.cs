@@ -408,7 +408,8 @@ namespace Helperland.Controllers
                                              select serviceRequestAddresses;
                 bs.serviceRequestExtras = from serviceRequestExtras in _db.ServiceRequestExtras
                                           select serviceRequestExtras;
-               
+                bs.users = from users in _db.Users select users;
+                bs.ratings = from ratings in _db.Ratings select ratings;
 
                 return View("Dashboard",bs);
             }
@@ -642,9 +643,13 @@ namespace Helperland.Controllers
                 model.ratings = from s in _db.Ratings
                                 select s;
                 model.sr = from s in _db.ServiceRequests
+                           where s.Status==1
                            select s;
                 model.favoriteAndBlockeds = from favoriteAndBlockeds in _db.FavoriteAndBlockeds
                                             where favoriteAndBlockeds.UserId == HttpContext.Session.GetInt32("UserId")
+                                            select favoriteAndBlockeds;
+                model.favoriteAndBlockeds1 = from favoriteAndBlockeds in _db.FavoriteAndBlockeds
+                                            where favoriteAndBlockeds.TargetUserId == HttpContext.Session.GetInt32("UserId")
                                             select favoriteAndBlockeds;
 
                 return View(model);
@@ -724,9 +729,392 @@ namespace Helperland.Controllers
             return RedirectToAction("Favouritepros");
         }
 
+        public IActionResult spnewservicerequests()
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+                
+                var x = from User in _db.Users
+                        where User.UserId == HttpContext.Session.GetInt32("UserId")
+                        select User.ZipCode;
+                SPViewModel sp = new SPViewModel();
+                sp.serviceRequests = from serviceRequests in _db.ServiceRequests
+                                     where serviceRequests.ZipCode == x.FirstOrDefault() && serviceRequests.Status == null && serviceRequests.ServiceProviderId == null
+                                     && serviceRequests.ServiceStartDate > DateTime.Now
+                                     select serviceRequests;
+                sp.serviceRequestswithoutpets= from serviceRequests in _db.ServiceRequests
+                                               where serviceRequests.ZipCode == x.FirstOrDefault() && serviceRequests.Status==null && serviceRequests.HasPets==false && serviceRequests.ServiceProviderId == null
+                                               && serviceRequests.ServiceStartDate > DateTime.Now   
+                                               select serviceRequests;
+                sp.serviceRequestAddresses= from serviceRequestAddresses in _db.ServiceRequestAddresses
+                                            select serviceRequestAddresses;
+                sp.serviceRequestExtras = from serviceRequestExtras in _db.ServiceRequestExtras
+                                          select serviceRequestExtras;
+                sp.favoriteAndBlockeds = from FavoriteAndBlocked in _db.FavoriteAndBlockeds
+                                         where FavoriteAndBlocked.TargetUserId== HttpContext.Session.GetInt32("UserId") 
+                                         select FavoriteAndBlocked;
+                sp.favoriteAndBlockeds1 = from FavoriteAndBlocked in _db.FavoriteAndBlockeds
+                                          where FavoriteAndBlocked.UserId == HttpContext.Session.GetInt32("UserId")
+                                          select FavoriteAndBlocked;
+                sp.users = from User in _db.Users
+                           where User.UserTypeId == 1
+                           select User;
 
 
+                return View(sp);
+            }
+            else 
+            {
+                return RedirectToAction("Index");
+            }
 
+        }
+        [HttpPost]
+        public IActionResult AcceptSr(SPViewModel model) 
+        {
+            var x = from ServiceRequest in _db.ServiceRequests
+                     where ServiceRequest.ServiceProviderId == HttpContext.Session.GetInt32("UserId")
+                     && ServiceRequest.Status == null
+                     select ServiceRequest;
+            
+            if (x.ToList() != null)
+            {
+                var j = 0;
+                foreach (var servicedatecheck in x)
+                {
+                    var endtimefromdb = servicedatecheck.ServiceStartDate.AddHours(servicedatecheck.ServiceHours + 1);
+                    if (endtimefromdb >= model.starttime && endtimefromdb < model.endtime)
+                    {
+                        j = 1;
+                    }
+                    else if (model.endtime >= servicedatecheck.ServiceStartDate && model.starttime < endtimefromdb)
+                    {
+                        j = 1;
+                    }
+                    else if (model.starttime >= servicedatecheck.ServiceStartDate && model.endtime <= endtimefromdb)
+                    {
+                        j = 1;
+                    }
+                    else if (servicedatecheck.ServiceStartDate >= model.starttime && endtimefromdb <= model.endtime) 
+                    {
+                        j = 1;
+                    }
+                    
+                }
+                if (j == 0)
+                {
+                    ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == model.srid).FirstOrDefault();
+                    serviceRequest.ServiceProviderId = HttpContext.Session.GetInt32("UserId");
+                    serviceRequest.SpacceptedDate = DateTime.Now;
+                    _db.ServiceRequests.Update(serviceRequest);
+                    _db.SaveChanges();
+                    return RedirectToAction("spnewservicerequests");
+                }
+                else 
+                {
+                    TempData["conflict"] = "conflict";
+                    return RedirectToAction("spnewservicerequests");
+
+                }
+
+            }
+            else
+            {
+                ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == model.srid).FirstOrDefault();
+                serviceRequest.ServiceProviderId = HttpContext.Session.GetInt32("UserId");
+                serviceRequest.SpacceptedDate = DateTime.Now;
+                _db.ServiceRequests.Update(serviceRequest);
+                _db.SaveChanges();
+                return RedirectToAction("spnewservicerequests");
+            }
+        }
+
+        public IActionResult spupcomingrequests() 
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+
+                var x = from User in _db.Users
+                        where User.UserId == HttpContext.Session.GetInt32("UserId")
+                        select User.ZipCode;
+                SPViewModel sp = new SPViewModel();
+                sp.serviceRequests = from serviceRequests in _db.ServiceRequests
+                                     where serviceRequests.ZipCode == x.FirstOrDefault() && serviceRequests.Status == null && serviceRequests.ServiceProviderId == HttpContext.Session.GetInt32("UserId")
+                                     select serviceRequests;
+                sp.serviceRequestAddresses = from serviceRequestAddresses in _db.ServiceRequestAddresses
+                                             select serviceRequestAddresses;
+                sp.serviceRequestExtras = from serviceRequestExtras in _db.ServiceRequestExtras
+                                          select serviceRequestExtras;
+
+                sp.users = from User in _db.Users
+                           where User.UserTypeId == 1
+                           select User;
+                return View(sp);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+        }
+        [HttpPost]
+        public IActionResult CancleSr(SPViewModel model) 
+        {
+            ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == model.srid).FirstOrDefault();
+            serviceRequest.ServiceProviderId = null ;
+            serviceRequest.SpacceptedDate = null;
+            _db.ServiceRequests.Update(serviceRequest);
+            _db.SaveChanges();
+            return RedirectToAction("spupcomingrequests");
+
+        }
+        [HttpPost]
+        public IActionResult DoneSr(SPViewModel model)
+        {
+            ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == model.srid).FirstOrDefault();
+            serviceRequest.Status = 1;
+            _db.ServiceRequests.Update(serviceRequest);
+            _db.SaveChanges();
+            return RedirectToAction("spupcomingrequests");
+
+        }
+        public IActionResult spservicehistory() 
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+
+                SPViewModel sp = new SPViewModel();
+                sp.serviceRequests = from serviceRequests in _db.ServiceRequests
+                                     where serviceRequests.Status == 1 && serviceRequests.ServiceProviderId == HttpContext.Session.GetInt32("UserId")
+                                     select serviceRequests;
+                sp.serviceRequestAddresses = from serviceRequestAddresses in _db.ServiceRequestAddresses
+                                             select serviceRequestAddresses;
+                sp.serviceRequestExtras = from serviceRequestExtras in _db.ServiceRequestExtras
+                                          select serviceRequestExtras;
+
+                sp.users = from User in _db.Users
+                           where User.UserTypeId == 1
+                           select User;
+                return View(sp);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+        }
+        public IActionResult spmyratings() 
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+
+                SPViewModel sp = new SPViewModel();
+                sp.serviceRequests = from serviceRequests in _db.ServiceRequests
+                                     where serviceRequests.Status == 1 && serviceRequests.ServiceProviderId == HttpContext.Session.GetInt32("UserId")
+                                     select serviceRequests;
+                sp.ratings = from Rating in _db.Ratings
+                             where Rating.RatingTo == HttpContext.Session.GetInt32("UserId")
+                             select Rating;
+                sp.users = from User in _db.Users
+                           where User.UserTypeId == 1
+                           select User;
+                return View(sp);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+        }
+        public IActionResult spblockcustomer() 
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+
+                SPViewModel sp = new SPViewModel();
+                sp.serviceRequests = from serviceRequests in _db.ServiceRequests
+                                     where serviceRequests.Status == 1 && serviceRequests.ServiceProviderId == HttpContext.Session.GetInt32("UserId")
+                                     select serviceRequests;
+                
+                sp.users = from User in _db.Users
+                           where User.UserTypeId == 1
+                           select User;
+                sp.favoriteAndBlockeds = from favoriteAndBlockeds in _db.FavoriteAndBlockeds
+                                            where favoriteAndBlockeds.UserId == HttpContext.Session.GetInt32("UserId")
+                                            select favoriteAndBlockeds;
+                return View(sp);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+
+        }
+        [HttpPost]
+        public IActionResult blockcust(SPViewModel model) 
+        {
+            FavoriteAndBlocked fb = _db.FavoriteAndBlockeds.Where(x => x.UserId == model.spid && x.TargetUserId == model.userid).FirstOrDefault();
+            if (fb != null)
+            {
+
+                fb.IsFavorite = false;
+                fb.IsBlocked = true;
+                _db.FavoriteAndBlockeds.Update(fb);
+                _db.SaveChanges();
+            }
+            else
+            {
+                FavoriteAndBlocked fb1 = new FavoriteAndBlocked();
+                fb1.UserId = model.spid;
+                fb1.TargetUserId = model.userid;
+                fb1.IsFavorite = false;
+                fb1.IsBlocked = true;
+                _db.FavoriteAndBlockeds.Add(fb1);
+                _db.SaveChanges();
+            }
+
+            return RedirectToAction("spblockcustomer");
+        }
+
+        [HttpPost]
+        public IActionResult unblockcust(SPViewModel model) 
+        {
+            FavoriteAndBlocked fb = _db.FavoriteAndBlockeds.Where(x => x.UserId == model.spid && x.TargetUserId == model.userid).FirstOrDefault();
+            if (fb != null)
+            {
+
+                fb.IsFavorite = false;
+                fb.IsBlocked = false;
+                _db.FavoriteAndBlockeds.Update(fb);
+                _db.SaveChanges();
+            }
+            return RedirectToAction("spblockcustomer");
+
+        }
+        public IActionResult SPprofile()
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+                var userinfo = (from User in _db.Users
+                                where User.UserId == HttpContext.Session.GetInt32("UserId")
+                                select new
+                                {
+                                    User.FirstName,
+                                    User.LastName,
+                                    User.Mobile,
+                                    User.DateOfBirth,
+                                    User.Email,
+                                    User.NationalityId,
+                                    User.Gender,
+                                    User.UserProfilePicture
+                                }).ToList();
+                var useradd = (from UserAddress in _db.UserAddresses
+                               where UserAddress.UserId == HttpContext.Session.GetInt32("UserId")
+                               select new
+                               {
+                                   UserAddress.AddressLine1,
+                                   UserAddress.AddressLine2,
+                                   UserAddress.City,
+                                   UserAddress.PostalCode,
+                               }).ToList();
+                if (userinfo.FirstOrDefault() != null)
+                {
+                    ViewBag.sfName = userinfo.FirstOrDefault().FirstName;
+                    ViewBag.slName = userinfo.FirstOrDefault().LastName;
+                    ViewBag.sMobile = userinfo.FirstOrDefault().Mobile;
+                    ViewBag.sDOB = userinfo.FirstOrDefault().DateOfBirth;
+                    ViewBag.sEmail = userinfo.FirstOrDefault().Email;
+                    ViewBag.sNationalityId = userinfo.FirstOrDefault().NationalityId;
+                    ViewBag.sGender = userinfo.FirstOrDefault().Gender;
+                    ViewBag.sUserProfilePicture = userinfo.FirstOrDefault().UserProfilePicture;
+                    ViewBag.sUserProfilePicture1 = userinfo.FirstOrDefault().UserProfilePicture;
+                    if (useradd.FirstOrDefault() != null) 
+                    {
+                        ViewBag.sAddressLine1 = useradd.FirstOrDefault().AddressLine1;
+                        ViewBag.sAddressLine2 = useradd.FirstOrDefault().AddressLine2;
+                        ViewBag.sCity = useradd.FirstOrDefault().City;
+                        ViewBag.SPostalCode = useradd.FirstOrDefault().PostalCode;
+                        return View();
+                    }
+                    return View();
+                }
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public IActionResult SpEditinfo(SPViewModel model) 
+        {
+            User u = _db.Users.Where(x => x.UserId == HttpContext.Session.GetInt32("UserId")).FirstOrDefault();
+            u.FirstName = model.fname;
+            u.LastName = model.lname;
+            u.Mobile = model.phone;
+            u.ModifiedDate = DateTime.Now;
+            if (model.day != null && model.month != null && model.year != null)
+            {
+                u.DateOfBirth = DateTime.Parse(model.day + "-" + model.month + "-" + model.year);
+            }
+            if (model.natid != null) 
+            {
+                u.NationalityId = int.Parse(model.natid);
+            }
+            u.UserProfilePicture = model.profiledp;
+            u.Gender = model.gender;
+            u.ZipCode = model.postal;
+            _db.Users.Update(u);
+            _db.SaveChanges();
+            UserAddress userAddress =_db.UserAddresses.Where(x => x.UserId == HttpContext.Session.GetInt32("UserId")).FirstOrDefault();
+            if (userAddress != null)
+            {
+                userAddress.AddressLine1 = model.add1;
+                userAddress.AddressLine2 = model.add2;
+                userAddress.City = model.city;
+                userAddress.PostalCode = model.postal;
+                _db.UserAddresses.Update(userAddress);
+                _db.SaveChanges();
+            }
+            else 
+            {
+                UserAddress userAddress1 = new UserAddress();
+                userAddress1.UserId =(int)HttpContext.Session.GetInt32("UserId");
+                userAddress1.AddressLine1 = model.add1;
+                userAddress1.AddressLine2 = model.add2;
+                userAddress1.City = model.city;
+                userAddress1.PostalCode = model.postal;
+                userAddress1.IsDefault = true;
+                userAddress1.IsDeleted = false;
+                _db.UserAddresses.Add(userAddress1);
+                _db.SaveChanges();
+            }
+
+            HttpContext.Session.SetString("FirstName", model.fname);
+            TempData["ups"] = "Bill";
+            return RedirectToAction("SPprofile");
+        }
+        [HttpPost]
+        public IActionResult ChangePasswordsp(SPViewModel model)
+        {
+            User user = _db.Users.Where(x => x.UserId == HttpContext.Session.GetInt32("UserId")).FirstOrDefault();
+            if (user.Password == model.oldpass)
+            {
+                user.Password = model.Password.ToString();
+                _db.Users.Update(user);
+                _db.SaveChanges();
+                TempData["Passwordchangesuccess"] = "Bill";
+                return RedirectToAction("SPprofile");
+            }
+            else
+            {
+
+                TempData["Passwordchangesuccess1"] = "Bill";
+                return RedirectToAction("SPprofile");
+
+            }
+        }
         public bool IsEmailExists(string eMail)
         {
             var IsCheck = _db.Users.Where(email => email.Email == eMail).FirstOrDefault();

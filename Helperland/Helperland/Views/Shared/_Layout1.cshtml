@@ -93,9 +93,9 @@
                 <ul class="navbar-nav ms-auto ">
                     @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserTypeId") == 1)
                     {
-                    <li class="nav-item ">
-                        <a class="nav-link sec" asp-action="bookservice" asp-controller="Home">Book now</a>
-                    </li>
+                        <li class="nav-item ">
+                            <a class="nav-link sec" asp-action="bookservice" asp-controller="Home">Book now</a>
+                        </li>
                     }
                     <li class="nav-item">
                         <a class="nav-link first" asp-controller="home" asp-action="Price">Price & Services</a>
@@ -117,28 +117,51 @@
                     <li class="nav-item">
                         <a class="first-3"><img src="~/img/user(1).png"></a>
                     </li>
-                    <li>
+                    @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserTypeId") == 1)
+                    {
+                        <li>
 
-                        <div class="btn-group dropstart">
-                            <img class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" src="~/img/arrow.png">
+                            <div class="btn-group dropstart">
+                                <img class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" src="~/img/arrow.png">
 
-                            <ul class="dropdown-menu mt-5">
-                                <li class="username">
-                                    Welcome,<br>
-                                    <b>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")</b>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item"  title="My Dashboard" asp-action="Dashboard" asp-controller="Home">My Dashboard</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" title="My Settings" asp-action="customerprofile" asp-controller="Home">My Settings</a>
-                                </li>
-                                <li><a class="dropdown-item" asp-action="logout" asp-controller="Home">Log out</a></li>
-                            </ul>
-                        </div>
-                    </li>
+                                <ul class="dropdown-menu mt-5">
+                                    <li class="username">
+                                        Welcome,<br>
+                                        <b>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")</b>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" title="My Dashboard" asp-action="Dashboard" asp-controller="Home">My Dashboard</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" title="My Settings" asp-action="customerprofile" asp-controller="Home">My Settings</a>
+                                    </li>
+                                    <li><a class="dropdown-item" asp-action="logout" asp-controller="Home">Log out</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                else { 
+    <li>
 
-                </ul>
+    <div class="btn-group dropstart">
+        <img class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" src="~/img/arrow.png">
+
+        <ul class="dropdown-menu mt-5">
+            <li class="username">
+                Welcome,<br>
+                <b>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")</b>
+            </li>
+            <li>
+                <a class="dropdown-item" title="My Dashboard">My Dashboard</a>
+            </li>
+            <li>
+                <a class="dropdown-item" title="My Settings" asp-action="SPprofile" asp-controller="Home" >My Settings</a>
+            </li>
+            <li><a class="dropdown-item" asp-action="logout" asp-controller="Home">Log out</a></li>
+        </ul>
+    </div>
+</li>}
+                    </ul>
             
         </div>
 

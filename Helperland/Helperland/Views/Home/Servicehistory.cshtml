@@ -88,41 +88,54 @@
                     decimal sp_avg = 0;
                     var ratingidname = serviceRequest.ServiceRequestId.ToString() + "r2";
                     var ratingidname1 = serviceRequest.ServiceRequestId.ToString() + "r1";
+                    var profile = 0;
                     <tr>
                         <td class="tdserviceid tdp" style="cursor:pointer;"><span onclick="details1(@sd)">@serviceRequest.ServiceId</span></td>
                         <td class="tddate" onclick="details1(@sd)"><img src="~/img/cal.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br>@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")</td>
                         @if (serviceRequest.ServiceProviderId != null)
                         {
-                            <td class="imgtd">
-                                <div class="imgcap"><img src="~/img/cap.png"></div>
-                                <div class="ratename">
-                                    @foreach (User user in Model.users)
-                                    {
-                                        if (serviceRequest.ServiceProviderId == user.UserId)
-                                        {<div class="tdp">@user.FirstName @user.LastName</div>}
+                    <td class="imgtd">
+                        @foreach (User user in Model.users)
+                        {
+                            if (serviceRequest.ServiceProviderId == user.UserId)
+                            {
+                                <div class=""><img width="60" height="60" src='@user.UserProfilePicture'></div>
+                                profile = 1;
 
-                                    }
+                            }
+                        }
+                        @if (profile == 0)
+                        {
+                            <div class=""><img width="60" height="60" src="~/img/avatar-hat.png"></div>
+                        }
+                        <div class="ratename">
+                            @foreach (User user in Model.users)
+                            {
+                                if (serviceRequest.ServiceProviderId == user.UserId)
+                                {<div class="tdp">@user.FirstName @user.LastName</div>}
 
-                                    @foreach (Rating rating in Model.ratings)
-                                    {
-                                        if (serviceRequest.ServiceProviderId == rating.RatingTo)
-                                        {
-                                            sp_count = sp_count + 1;
-                                            sp_avg = sp_avg + rating.Ratings;
-                                        }
+                        }
 
-                                    }
-                                    @if (sp_count >= 1)
-                                    {
-                                        sp_avg = sp_avg / sp_count;
-                                        sp_avg = Convert.ToDecimal(String.Format("{0:0.00}", sp_avg));
-                                    }
-                                    <div class="ratingtd" onload="avgrating('@ratingidname',@sp_avg)">
-                                        <span id=@ratingidname style="z-index:0;"></span>
-                                        <div class="ratingnum">@sp_avg</div>
-                                    </div>
-                                </div>  
-                            </td>
+                            @foreach (Rating rating in Model.ratings)
+                            {
+                                if (serviceRequest.ServiceProviderId == rating.RatingTo)
+                                {
+                                    sp_count = sp_count + 1;
+                                    sp_avg = sp_avg + rating.Ratings;
+                                }
+
+                            }
+                            @if (sp_count >= 1)
+                            {
+                                sp_avg = sp_avg / sp_count;
+                                sp_avg = Convert.ToDecimal(String.Format("{0:0.00}", sp_avg));
+                            }
+                            <div class="ratingtd" onload="avgrating('@ratingidname',@sp_avg)">
+                                <span id=@ratingidname style="z-index:0;"></span>
+                                <div class="ratingnum">@sp_avg</div>
+                            </div>
+                        </div>
+                    </td>
                         }
                         else
                         {
@@ -304,7 +317,19 @@
 
                             <div class="form">
                                 <div class="imgtd1">
-                                    <div class="imgcap"><img src="~/img/cap.png"></div>
+                                    @foreach (User user in Model.users)
+                                    {
+                                        if (serviceRequest.ServiceProviderId == user.UserId)
+                                        {
+                                            <div class=""><img width="60" height="60" src='@user.UserProfilePicture'></div>
+                                            profile = 1;
+
+                                        }
+                                    }
+                                    @if (profile == 0)
+                                    {
+                                        <div class=""><img width="60" height="60" src="~/img/avatar-hat.png"></div>
+                                    }
                                     <div class="ratename">
 
                                         @foreach (User user in Model.users)

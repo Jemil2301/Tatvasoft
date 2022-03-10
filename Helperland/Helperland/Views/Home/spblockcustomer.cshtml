@@ -1,0 +1,161 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Helperland.Models.Data
+@using System.Collections;
+@inject IHttpContextAccessor HttpContextAccessor
+@model Helperland.ViewModel.SPViewModel
+@{
+    ViewBag.Title = "Block Customer";
+}
+<section class="container-fluid name">
+    <p>Welcome, <span>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")!</span></p>
+</section>
+
+<section class="container-fluid top-side">
+
+    <div class="wrapper">
+        <div class="sidebar">
+
+            <ul>
+                <li>
+
+                    <a href="">
+                        Dashbord
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spnewservicerequests" asp-controller="Home">
+                        New Service Requests
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spupcomingrequests" asp-controller="Home">
+                        Upcoming Services
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Service Schedule
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spservicehistory" asp-controller="Home">
+                        Service History
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="spmyratings" asp-controller="Home">
+                        My Rating
+                    </a>
+                </li>
+                <li class="active">
+                    <a asp-action="spblockcustomer" asp-controller="Home">
+                        Block Customer
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <div class="Customer_service-history-table">
+
+        <table class="dataTable Favouritepros cards" id="table-id1">
+            <thead style="display:none;">
+                <tr>
+                    <th>x</th>
+                    <th>z</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var arlist = new ArrayList();
+
+                }
+                @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                {
+                    var checkblkfav = 0;
+                    if (arlist.Contains(serviceRequest.UserId))
+                    {
+                    }
+                    else
+                    {
+                        arlist.Add(serviceRequest.UserId);
+                        <tr class="col-sm-3">
+
+                            <td class="imgtd" style=" flex-direction: column;">
+                                <div class="imgcap" style="padding:10px;"><img style="width: 60px;" src="~/img/cap.png"></div>
+                                <div class="ratename">
+                                    @foreach (User user in Model.users)
+                                    {
+                                        @if (serviceRequest.UserId == user.UserId)
+                                        {
+                                            <div class="tdp">@user.FirstName @user.LastName</div>
+                                        }
+                                    }
+
+                                </div>
+                            </td>
+
+                            <td>
+                                @foreach (FavoriteAndBlocked fbb in Model.favoriteAndBlockeds)
+                                {
+
+                                    if (fbb.TargetUserId == serviceRequest.UserId && fbb.IsBlocked == true)
+                                    {
+                                        <form asp-action="unblockcust">
+                                            <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                            <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+                                            <div class="block_fav">
+                                                <button type="submit" class="block">Unblock</button>
+
+                                            </div>
+                                        </form>
+                                        checkblkfav = 1;
+                                    }
+                                    else if(fbb.TargetUserId == serviceRequest.UserId && fbb.IsBlocked == false)
+                                    {
+                                        <div class="block_fav">
+                                            <div>
+                                                <form asp-action="blockcust">
+                                                    <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                                    <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+
+                                                    <button class="block">Block</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        checkblkfav = 1;
+
+                                    }
+
+
+                                }
+                                @if (checkblkfav == 0)
+                                {
+                                    <div class="block_fav">
+                                        <div>
+                                            <form asp-action="blockcust">
+                                                <input type="hidden" value="@serviceRequest.ServiceProviderId" asp-for="spid">
+                                                <input type="hidden" value="@serviceRequest.UserId" asp-for="userid">
+
+                                                <button class="block">Block</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                }
+                                
+                            </td>
+                        </tr>
+                    }
+                }
+
+
+
+
+            </tbody>
+        </table>
+    </div>
+
+
+</section>
+
+<script type="text/javascript" src="~/JS/main.js"></script>
