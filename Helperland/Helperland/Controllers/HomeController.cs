@@ -2,10 +2,12 @@
 using Helperland.Models;
 using Helperland.Models.Data;
 using Helperland.ViewModel;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -448,12 +450,69 @@ namespace Helperland.Controllers
         [HttpPost]
         public IActionResult updaterequest(CustomerViewModel customerViewModel) 
         {
-            ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == customerViewModel.
+            if (customerViewModel.spid == 0)
+            {
+                ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == customerViewModel.
             Cancelrequestid).FirstOrDefault();
-            serviceRequest.ServiceStartDate = DateTime.Parse(customerViewModel.date + " " + customerViewModel.time);
-            _db.ServiceRequests.Update(serviceRequest);
-            _db.SaveChanges();
-            return RedirectToAction("Dashboard");
+                serviceRequest.ServiceStartDate = DateTime.Parse(customerViewModel.date + " " + customerViewModel.time);
+                _db.ServiceRequests.Update(serviceRequest);
+                _db.SaveChanges();
+                return RedirectToAction("Dashboard");
+            }
+            else 
+            {
+                var x = from ServiceRequest in _db.ServiceRequests
+                        where ServiceRequest.ServiceProviderId == customerViewModel.spid
+                        && ServiceRequest.Status == null && ServiceRequest.ServiceRequestId != customerViewModel.Cancelrequestid
+                        select ServiceRequest;
+                var mstartdate = DateTime.Parse(customerViewModel.date + " " + customerViewModel.time);
+                var menddate = mstartdate.AddHours(customerViewModel.srhr);
+                var j = 0;
+                foreach (var servicedatecheck in x)
+                {
+                    var endtimefromdb = servicedatecheck.ServiceStartDate.AddHours(servicedatecheck.ServiceHours);
+                    if (endtimefromdb >= mstartdate && endtimefromdb < menddate)
+                    {
+                        j = 1;
+                    }
+
+                    else if (menddate >= servicedatecheck.ServiceStartDate && mstartdate < endtimefromdb)
+                    {
+                        j = 1;
+                    }
+                    else if (mstartdate >= servicedatecheck.ServiceStartDate && menddate <= endtimefromdb)
+                    {
+                        j = 1;
+                    }
+                    else if (servicedatecheck.ServiceStartDate >= mstartdate && endtimefromdb <= menddate)
+                    {
+                        j = 1;
+                    }
+                    if (j == 1)
+                    {
+                        TempData["date"] = servicedatecheck.ServiceStartDate.ToShortDateString();
+                        TempData["s"] = servicedatecheck.ServiceStartDate.ToString("HH:mm");
+                        TempData["e"] = servicedatecheck.ServiceStartDate.AddHours(servicedatecheck.ServiceHours).ToString("HH:mm");
+                        break;
+                    }
+                }
+                if (j == 0)
+                {
+                    ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == customerViewModel.
+             Cancelrequestid).FirstOrDefault();
+                    serviceRequest.ServiceStartDate = DateTime.Parse(customerViewModel.date + " " + customerViewModel.time);
+                    _db.ServiceRequests.Update(serviceRequest);
+                    _db.SaveChanges();
+                    return RedirectToAction("Dashboard");
+
+                }
+                else if (j == 1)
+                {
+                    TempData["conflict11"] = "conflict";
+
+                }
+                return RedirectToAction("Dashboard");
+            }
         }
 
         public IActionResult Servicehistory() 
@@ -1114,6 +1173,212 @@ namespace Helperland.Controllers
                 return RedirectToAction("SPprofile");
 
             }
+        }
+
+        public IActionResult Usermanagement()
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+                AdminViewModel adminView = new AdminViewModel();
+                adminView.user = from users in _db.Users
+                                 where users.UserTypeId != 3
+                                 select users;
+
+                return View(adminView);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public IActionResult Activate(AdminViewModel model) 
+        {
+            User user = _db.Users.Where(x => x.UserId == model.usrid).FirstOrDefault();
+            user.IsApproved = true;
+            user.ModifiedBy = 3;
+            user.ModifiedDate = DateTime.Now;
+            _db.Users.Update(user);
+            _db.SaveChanges();
+            return RedirectToAction("Usermanagement");
+
+        }
+        [HttpPost]
+        public IActionResult Deactivate(AdminViewModel model)
+        {
+            User user = _db.Users.Where(x => x.UserId == model.usrid).FirstOrDefault();
+            user.IsApproved = false;
+            user.ModifiedBy = 3;
+            user.ModifiedDate = DateTime.Now;
+            _db.Users.Update(user);
+            _db.SaveChanges();
+            return RedirectToAction("Usermanagement");
+
+        }
+        public IActionResult Servicerequests() 
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+                AdminViewModel adminView = new AdminViewModel();
+                adminView.user = from users in _db.Users
+                                 where users.UserTypeId != 3
+                                 select users;
+                adminView.serviceRequests = from serviceRequests in _db.ServiceRequests
+                                            select serviceRequests;
+                adminView.serviceRequestAddresses = from serviceRequestAddresses in _db.ServiceRequestAddresses
+                                                    select serviceRequestAddresses;
+                adminView.ratings = from ratings in _db.Ratings select ratings;
+
+
+                return View(adminView);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public IActionResult updatesradmin(AdminViewModel model) 
+        {
+            ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == model.Srid).FirstOrDefault();
+            ServiceRequestAddress serviceRequestAddress = _db.ServiceRequestAddresses.Where(x => x.ServiceRequestId == model.Srid).FirstOrDefault();
+            serviceRequest.ServiceStartDate = DateTime.Parse(model.date1 + " " + model.time1);
+            serviceRequest.ModifiedBy = 3;
+            serviceRequest.ModifiedDate = DateTime.Now;
+            serviceRequestAddress.AddressLine1 = model.Add1.ToString();
+            serviceRequestAddress.AddressLine2 = model.Add2.ToString();
+            serviceRequestAddress.City = model.City.ToString();
+            serviceRequestAddress.PostalCode = model.zipcode;
+            _db.ServiceRequests.Update(serviceRequest);
+            _db.ServiceRequestAddresses.Update(serviceRequestAddress);
+            _db.SaveChanges();
+            if (serviceRequest.ServiceProviderId != null)
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+                message.To.Add(new MailboxAddress(model.username, model.useremail));
+                message.Subject = "Admin Reschedule Service Request";
+                message.Body = new TextPart("plain")
+                {
+                    Text = "Admin Reschedule Service Request   ServiceID:" + model.Srid1
+                };
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                    client.Send(message);
+                    client.Disconnect(true);
+                }
+                var message1 = new MimeMessage();
+                message1.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+                message1.To.Add(new MailboxAddress(model.spname, model.spemail));
+                message1.Subject = "Admin Reschedule Service Request ";
+                message1.Body = new TextPart("plain")
+                {
+                    Text = "Admin Reschedule Service Request   ServiceID:" + model.Srid1
+                };
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                    client.Send(message1);
+                    client.Disconnect(true);
+                }
+                return RedirectToAction("Servicerequests");
+
+            }
+            else
+            {
+                var message2 = new MimeMessage();
+                message2.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+                message2.To.Add(new MailboxAddress(model.username, model.useremail));
+                message2.Subject = "Admin Reschedule Service Request";
+                message2.Body = new TextPart("plain")
+                {
+                    Text = "Admin Reschedule Service Request   ServiceID:" + model.Srid1
+                };
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                    client.Send(message2);
+                    client.Disconnect(true);
+                }
+                return RedirectToAction("Servicerequests");
+            }
+
+        }
+        [HttpPost]
+        public IActionResult cancelsrfromadmin(AdminViewModel model) 
+        {
+            ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == model.Srid).FirstOrDefault();
+            serviceRequest.Status = 2;
+            serviceRequest.ModifiedBy = 3;
+            serviceRequest.ModifiedDate = DateTime.Now;
+            _db.ServiceRequests.Update(serviceRequest);
+            _db.SaveChanges();
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+            message.To.Add(new MailboxAddress(model.username, model.useremail));
+            message.Subject = "Your Service Request is Cancelled";
+            message.Body = new TextPart("plain")
+            {
+                Text = "Admin Cancel Your Service Request ServiceID:" + model.Srid1
+            };
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, false);
+                client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                client.Send(message);
+                client.Disconnect(true);
+            }
+            return RedirectToAction("Servicerequests");
+
+        }
+        [HttpPost]
+        public IActionResult cancelspfromadmin(AdminViewModel model)
+        {
+            ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == model.Srid).FirstOrDefault();
+            serviceRequest.ModifiedBy = 3;
+            serviceRequest.ModifiedDate = DateTime.Now;
+            serviceRequest.ServiceProviderId = null;
+            serviceRequest.SpacceptedDate = null;
+            _db.ServiceRequests.Update(serviceRequest);
+            _db.SaveChanges();
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+            message.To.Add(new MailboxAddress(model.username,model.useremail));
+            message.Subject = "Admin deallocated Service Provider";
+            message.Body = new TextPart("plain")
+            {
+                Text = "Admin deallocated Service Provider for ServiceRequest ID:" + model.Srid1
+            };
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, false);
+                client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                client.Send(message);
+                client.Disconnect(true);
+            }
+            var message1 = new MimeMessage();
+            message1.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+            message1.To.Add(new MailboxAddress(model.spname, model.spemail));
+            message1.Subject = "Admin deallocated you for service ";
+            message1.Body = new TextPart("plain")
+            {
+                Text = "Admin deallocated you for ServiceRequest ID:" + model.Srid1
+            };
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, false);
+                client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                client.Send(message1);
+                client.Disconnect(true);
+            }
+            return RedirectToAction("Servicerequests");
+
         }
         public bool IsEmailExists(string eMail)
         {

@@ -32,6 +32,7 @@ namespace Helperland.Controllers
                            {
                                userlist.UserId,
                                userlist.FirstName,
+                               userlist.LastName,
                                userlist.Email,
                                userlist.Password,
                                userlist.UserTypeId,
@@ -58,7 +59,7 @@ namespace Helperland.Controllers
                 {
                     HttpContext.Session.SetString("FirstName", details.FirstOrDefault().FirstName);
                     HttpContext.Session.SetInt32("UserId", details.FirstOrDefault().UserId);
-                    
+
                     if (reg.chceckbookorlogin != null)
                     {
                         return RedirectToAction("bookservice", "Home");
@@ -68,29 +69,47 @@ namespace Helperland.Controllers
                         return RedirectToAction("Dashboard", "Home");
                     }
                 }
-                else 
+                else if (details.FirstOrDefault().UserTypeId == 3) 
                 {
-                    if (reg.chceckbookorlogin != null) 
+
+                    if (reg.chceckbookorlogin != null)
+                    {
+                        ModelState.AddModelError("Invalid", "Only Customer can access this part. ");
+                        ViewBag.Message = String.Format("Invalid Login");
+                        return View("~/Views/Home/Index.cshtml");
+                    }
+                    else {
+                        HttpContext.Session.SetString("FirstName", details.FirstOrDefault().FirstName);
+                        HttpContext.Session.SetString("LastName", details.FirstOrDefault().LastName);
+                        HttpContext.Session.SetInt32("UserId", details.FirstOrDefault().UserId);
+                        return RedirectToAction("Servicerequests", "Home");
+                    }
+
+                }
+                else
+                {
+                    if (reg.chceckbookorlogin != null)
                     {
                         ModelState.AddModelError("Invalid", "Only Customer can access this part. ");
                         ViewBag.Message = String.Format("Invalid Login");
                         return View("~/Views/Home/Index.cshtml");
                     }
 
-                    if (details.FirstOrDefault().IsApproved) 
+                    if (details.FirstOrDefault().IsApproved)
                     {
-                      
+
                         HttpContext.Session.SetInt32("UserId", details.FirstOrDefault().UserId);
                         HttpContext.Session.SetString("FirstName", details.FirstOrDefault().FirstName);
                         return RedirectToAction("spnewservicerequests", "Home");
-                    
+
                     }
-                    else {
+                    else
+                    {
                         ModelState.AddModelError("Invalid", "Your Account is not Approved yet");
                         ViewBag.Message = String.Format("Invalid Login");
                         return View("~/Views/Home/Index.cshtml");
                     }
-                    
+
                 }
                 
                 

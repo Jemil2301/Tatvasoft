@@ -26,6 +26,7 @@ namespace Helperland.ViewModel
         public IEnumerable<FavoriteAndBlocked> favoriteAndBlockeds1 { get; set; }
         public int userid { get; set; }
         public int spid { get; set; }
+        public float srhr { get; set; }
 
     }
 }

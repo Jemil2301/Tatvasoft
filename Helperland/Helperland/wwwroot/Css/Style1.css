@@ -92,6 +92,14 @@
 	border-radius: 6px;
 	z-index: 3;
 }
+.modal-content5 {
+	background-color: white;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 598px;
+	border-radius: 6px;
+}
 @media(max-width:991px) {
 	.modal-content3 {
 		width:auto;
@@ -100,7 +108,12 @@
 		width: auto;
 	}
 }
-
+@media(max-width: 600px) {
+	.modal-content5 {
+		width: auto;
+		height: auto;
+	}
+}
 /* The Close Button */
 .close img  {
   color: #aaaaaa;

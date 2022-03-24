@@ -100,15 +100,17 @@
                                         {
                                             if (serviceRequest.ServiceProviderId == user.UserId)
                                             {
-                                                <div class=""><img src='@user.UserProfilePicture'></div>
-                                                profile = 1;
+                                                if (user.UserProfilePicture != null)
+                                                {
+                                                    <div class=""><img width="60" height="60" src='@user.UserProfilePicture'></div>}
+                                                else
+                                                {
+
+                                                    <div class=""><img width="60" height="60" src="~/img/avatar-hat.png"></div>}
 
                                             }
                                         }
-                                        @if (profile == 0)
-                                        {
-                                            <div class=""><img width="60" height="60" src="~/img/avatar-hat.png"></div>
-                                        }
+                                       
                                         <div class="ratename">
                                             @foreach (User user in Model.users)
                                             {

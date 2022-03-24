@@ -1,0 +1,152 @@
+﻿@model Helperland.ViewModel.AdminViewModel
+@using Helperland.Models.Data
+@{
+    ViewBag.Title = "User Management";
+    Layout = "~/Views/Shared/_Layoutadmin.cshtml";
+}
+<section class="container-fluid user_manag">
+    <div class="top-side">
+        <div class="wrap">
+
+            <div class="sidebar">
+                <ul>
+
+                    <li>
+                        <a asp-action="Servicerequests" asp-controller="Home">
+                            Service Requests
+                        </a>
+                    </li>
+
+                    <li class="active">
+                        <a asp-action="Usermanagement" asp-controller="Home">
+                            User Management
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="secondsidetable">
+            <div class="secondsidetable1">
+                <h2>User Management</h2>
+                
+            </div>
+            <div class="secondsidetabl2">
+                <div>
+
+                    <input id="usrname" placeholder="Username" list="brow">
+                    <datalist id="brow">
+                        @foreach (User user in Model.user)
+                        {
+                            <option value="@user.FirstName @user.LastName">@user.FirstName @user.LastName</option>
+                        }
+                    </datalist>
+                    <select id="usrtype">
+                        <option value="" class="dissel" disabled selected>User Type</option>
+                        <option value="Customer">Customer</option>
+                        <option value="Service Provider">Service Provider</option>
+                    </select>
+
+                    <span>+91</span>
+                    <input id="phn" class="phonenumber" type="tel" name="Phonenum" placeholder="Phone Number">
+                    <input id="zipcode" class="zicopde" type="Zip" name="Zipcode" placeholder="Zip Code">
+                    <button class="searchbtn" id="searchButton" type="button">Search</button>
+                    <button class="clearbtn" type="button" id="clearButton">Clear</button>
+
+                </div>
+            </div>
+            <div class="secondsidetable1">
+               
+                <button id="button_export_excel">
+                    Export
+                </button>
+            </div>
+            <div class="secondsidetable3">
+                <table class="datatable" id="table-id">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Phone number</th>
+                            <th>Date of Registration</th>
+                            <th>User Type</th>
+                            <th>Postal Code</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (User user in Model.user)
+                        {
+                            <tr>
+                                <td>@user.FirstName @user.LastName </td>
+                                <td>@user.Mobile</td>
+                                <td><img src="~/img/calculator.png">@user.CreatedDate.ToShortDateString()</td>
+                                <td>
+                                    @if (user.UserTypeId == 1)
+                                    {<span>Customer</span> }
+                                    else
+                                    {<span>Service Provider</span>}
+                                </td>
+
+                                @if (user.ZipCode != null)
+                                {
+                                    <td>@user.ZipCode</td>
+                                }
+                                else
+                                {
+                                    <td> </td>
+                                }
+                                @if (user.IsApproved == true)
+                                {
+                                    <td><button class="btnactive">Active</button></td>
+                                }
+                                else
+                                {
+                                    <td><button class="Statuscancle1">Inactive</button></td>
+
+                                }
+                                @if (user.UserTypeId == 1)
+                                {
+                                    <td>
+
+
+                                        <div class="btn-group dropstart">
+                                            <div class="fa fa-ellipsis-v " style="cursor:not-allowed;"></div>
+                                        </div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+
+
+                                        <div class="btn-group dropstart">
+
+                                            <a href="" class="fa fa-ellipsis-v " data-bs-toggle="dropdown" data-bs-display="static"></a>
+                                            <ul class="menuforoption dropdown-menu">
+                                                <form asp-action="Activate" asp-controller="Home">
+                                                    <input type="hidden" value="@user.UserId" asp-for="usrid" />
+                                                <li><button class="dropdown-item">activate</button></li>
+                                                </form>
+                                                <form asp-action="Deactivate" asp-controller="Home">
+                                                    <input type="hidden" value="@user.UserId" asp-for="usrid" />
+                                                <li><button class="dropdown-item">Deactivate</button></li>
+                                                </form>
+
+                                            </ul>
+                                        </div>
+                                    </td>
+                                }
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="secondsidetable4">©2018 Helperland. All rights reserved.</div>
+        </div>
+    </div>
+</section>
+

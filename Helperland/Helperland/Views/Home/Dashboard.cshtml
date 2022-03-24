@@ -68,7 +68,12 @@
                 </button>
             </form>
         </div>
+        <div class="sucess col-lg-12" style="justify-content: center; align-items: center; color: white; opacity:0.5; background-color: #a83c34; border-color: #d6e9c6; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; display: none;" id="_sucess5">
+            <span class="close" onclick="document.getElementById('_sucess5').style.display='none';">x</span>
+            Another service request has been assigned to the
+            service provider on @TempData["date"] from @TempData["s"] to @TempData["e"]. Either choose another date or pick up a different time slot.
 
+        </div>
         <table class="datatable" id="table-id">
             <thead>
                 <tr class="table_th">
@@ -95,52 +100,55 @@
                             ViewBag.x = sd1;
                         }
                         <td class="tdserviceid tdp" style="cursor:pointer;"><span onclick="details1(@sd)">@serviceRequest.ServiceId</span></td>
-                        <td class="tddate"onclick="details1(@sd)">
+                        <td class="tddate" onclick="details1(@sd)">
                             <img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png">@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
                         </td>
                         @if (serviceRequest.ServiceProviderId != null)
                         {
-                    <td class="imgtd">
-                        @foreach (User user in Model.users)
-                        {
-                            if (serviceRequest.ServiceProviderId == user.UserId)
-                            {
-                                <div class=""><img width="60" height="60" src='@user.UserProfilePicture'></div>
-                                profile = 1;
-                            }
-                        }
-                        @if (profile == 0)
-                        {
-                            <div class=""><img width="60" height="60" src="~/img/avatar-hat.png"></div>
-                        }
-                        <div class="ratename">
-                            @foreach (User user in Model.users)
-                            {
-                                if (serviceRequest.ServiceProviderId == user.UserId)
-                                {<div class="tdp">@user.FirstName @user.LastName</div>}
-
-                        }
-
-                            @foreach (Rating rating in Model.ratings)
-                            {
-                                if (serviceRequest.ServiceProviderId == rating.RatingTo)
+                            <td class="imgtd">
+                                @foreach (User user in Model.users)
                                 {
-                                    sp_count = sp_count + 1;
-                                    sp_avg = sp_avg + rating.Ratings;
+                                    if (serviceRequest.ServiceProviderId == user.UserId)
+                                    {
+                                        if (user.UserProfilePicture != null)
+                                        {
+                                            <div class=""><img width="60" height="60" src='@user.UserProfilePicture'></div>}
+                                        else
+                                        {
+
+                                            <div class=""><img width="60" height="60" src="~/img/avatar-hat.png"></div>}
+                                        profile = 1;
+                                    }
                                 }
 
-                            }
-                            @if (sp_count >= 1)
-                            {
-                                sp_avg = sp_avg / sp_count;
-                                sp_avg = Convert.ToDecimal(String.Format("{0:0.00}", sp_avg));
-                            }
-                            <div class="ratingtd" onload="avgrating('@ratingidname',@sp_avg)">
-                                <span id=@ratingidname style="z-index:0;"></span>
-                                <div class="ratingnum">@sp_avg</div>
-                            </div>
-                        </div>
-                    </td>
+                                <div class="ratename">
+                                    @foreach (User user in Model.users)
+                                    {
+                                        if (serviceRequest.ServiceProviderId == user.UserId)
+                                        {<div class="tdp">@user.FirstName @user.LastName</div>}
+
+                                }
+
+                                    @foreach (Rating rating in Model.ratings)
+                                    {
+                                        if (serviceRequest.ServiceProviderId == rating.RatingTo)
+                                        {
+                                            sp_count = sp_count + 1;
+                                            sp_avg = sp_avg + rating.Ratings;
+                                        }
+
+                                    }
+                                    @if (sp_count >= 1)
+                                    {
+                                        sp_avg = sp_avg / sp_count;
+                                        sp_avg = Convert.ToDecimal(String.Format("{0:0.00}", sp_avg));
+                                    }
+                                    <div class="ratingtd" onload="avgrating('@ratingidname',@sp_avg)">
+                                        <span id=@ratingidname style="z-index:0;"></span>
+                                        <div class="ratingnum">@sp_avg</div>
+                                    </div>
+                                </div>
+                            </td>
                         }
                         else
                         {
@@ -152,12 +160,21 @@
 
                         <td>
                             <div class="reschedulecancle">
-                                <div class="reschedule">
-                                    <button onclick="Reschedule(@sd1)">Reschedule</button>
+                                @if (serviceRequest.ServiceProviderId > 0)
+                                {
+                                    <div class="reschedule">
+                                        <button onclick="Reschedule(@sd1,@serviceRequest.ServiceProviderId,@serviceRequest.ServiceHours)">Reschedule</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="reschedule">
+                                        <button onclick="Reschedule(@sd1,0)">Reschedule</button>
+                                    </div>
+                                }
 
-                                </div>
                                 <div class="cancleservice">
-                                    <button  onclick="cancel(@sd1)">Cancel</button>
+                                    <button onclick="cancel(@sd1)">Cancel</button>
                                 </div>
                             </div>
                         </td>
@@ -168,7 +185,6 @@
                         <div class="modal-content3">
                             <span class="close" onclick="document.getElementById('@sd').style.display='none';"><img src="~/img/close.png"></span>
                             <form asp-action="updaterequest" asp-controller="Home">
-                               
                             </form>
 
 
@@ -179,95 +195,95 @@
                                     Service Details
                                 </div>
 
-                                    
-                                        <div class="dateandtime">
-                                            @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
-                                        </div>
-                                        <div class="popupdiv">
-                                            Duration:<span>@serviceRequest.ServiceHours Hrs</span>
-                                        </div>
-                                        <hr style="width:100%;" />
-                                        <div class="popupdiv">
-                                            Service Id:<span>@serviceRequest.ServiceId</span>
-                                        </div>
-                                        <div class="popupdiv">
-                                            Extra:
-                                            @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+
+                                <div class="dateandtime">
+                                    @serviceRequest.ServiceStartDate.ToShortDateString()  @serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")
+                                </div>
+                                <div class="popupdiv">
+                                    Duration:<span>@serviceRequest.ServiceHours Hrs</span>
+                                </div>
+                                <hr style="width:100%;" />
+                                <div class="popupdiv">
+                                    Service Id:<span>@serviceRequest.ServiceId</span>
+                                </div>
+                                <div class="popupdiv">
+                                    Extra:
+                                    @foreach (var serviceRequestExtra in Model.serviceRequestExtras)
+                                    {
+                                        if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
+                                        {
+
+                                            if (serviceRequestExtra.ServiceExtraId == 1)
                                             {
-                                                if (serviceRequest.ServiceRequestId == serviceRequestExtra.ServiceRequestId)
-                                                {
-
-                                                    if (serviceRequestExtra.ServiceExtraId == 1)
-                                                    {
-                                                        <span> Inside cabinets</span>
-                                                    }
-                                                    else if (serviceRequestExtra.ServiceExtraId == 2)
-                                                    {
-                                                        <span>Inside fridge</span>
-                                                    }
-                                                    else if (serviceRequestExtra.ServiceExtraId == 3)
-                                                    {
-                                                        <span> Inside oven</span>
-                                                    }
-                                                    else if (serviceRequestExtra.ServiceExtraId == 4)
-                                                    {
-                                                        <span> Laundry wash & dry</span>
-                                                    }
-                                                    else if (serviceRequestExtra.ServiceExtraId == 5)
-                                                    {
-                                                        <span> Interior windows</span>
-                                                    }
-
-                                                }
-
+                                                <span> Inside cabinets</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 2)
+                                            {
+                                                <span>Inside fridge</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 3)
+                                            {
+                                                <span> Inside oven</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 4)
+                                            {
+                                                <span> Laundry wash & dry</span>
+                                            }
+                                            else if (serviceRequestExtra.ServiceExtraId == 5)
+                                            {
+                                                <span> Interior windows</span>
                                             }
 
-
-                                        </div>
-                                        <div class="popupdiv">
-                                            Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
-                                        </div>
-                                        <hr style="width:100%;" />
-                                        @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
-                                        {
-                                            if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
-                                            {
-                                                <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
-                                                if (serviceRequestAddress.Mobile != null)
-                                                {
-                                                    <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
-                                                }
-                                                if (serviceRequestAddress.Email != null)
-                                                {
-                                                    <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
-                                                }
-                                            }
                                         }
 
-                                        <hr style="width:100%;" />
-                                        <div class="popupdiv">Comments</div>
-                                        @if (serviceRequest.HasPets == true)
-                                        {
-                                            <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
-                                        }
-                                        else
-                                        {
-                                            <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
-                                        }
-                                  
-                                    
-                               
-                                    <div class="reschedulecancle">
-                                        <div class="reschedule">
-                                            <button onclick="Reschedule(@sd1)">Reschedule</button>
+                                    }
 
-                                        </div>
-                                        <div class="cancleservice">
-                                            <button onclick="cancel(@sd1)">Cancel</button>
-                                        </div>
-                                    </div>
 
                                 </div>
+                                <div class="popupdiv">
+                                    Net Amount:<span class="payment">$@serviceRequest.TotalCost</span>
+                                </div>
+                                <hr style="width:100%;" />
+                                @foreach (var serviceRequestAddress in Model.serviceRequestAddresses)
+                                {
+                                    if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                    {
+                                        <div class="popupdiv">Service Address: <span>@serviceRequestAddress.AddressLine1, @serviceRequestAddress.AddressLine2</span></div>
+                                        if (serviceRequestAddress.Mobile != null)
+                                        {
+                                            <div class="popupdiv">Phone:<span> @serviceRequestAddress.Mobile</span></div>
+                                        }
+                                        if (serviceRequestAddress.Email != null)
+                                        {
+                                            <div class="popupdiv">Email:<span>@serviceRequestAddress.Email</span></div>
+                                        }
+                                    }
+                                }
+
+                                <hr style="width:100%;" />
+                                <div class="popupdiv">Comments</div>
+                                @if (serviceRequest.HasPets == true)
+                                {
+                                    <div class="popupdiv"><img src="~/img/included.png" /><span>I have pets at home</span></div>
+                                }
+                                else
+                                {
+                                    <div class="popupdiv"><img src="~/img/not-included.png" /><span>I don't have pets at home</span></div>
+                                }
+
+
+
+                                <div class="reschedulecancle">
+                                    <div class="reschedule">
+                                        <button onclick="Reschedule(@sd1)">Reschedule</button>
+
+                                    </div>
+                                    <div class="cancleservice">
+                                        <button onclick="cancel(@sd1)">Cancel</button>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
 
                     </div>
@@ -303,6 +319,9 @@
                     <span style="color:#646464;font-size:16px; font-family:'Roboto',sans-serif;"> Select New Date & Time</span>
                 </div>
                 <input asp-for="Cancelrequestid" id="hiddenserviceid" type="hidden" value="" />
+                <input asp-for="spid" id="spid" type="hidden" value="" />
+                <input asp-for="srhr" id="srhr" type="hidden" value="" />
+
                 <div class="form-group calculator-date-time flex-1 justify-content-center">
                     <div class="input-wrapper">
 
@@ -372,8 +391,7 @@
 </div>
 <script type="text/javascript" src="~/JS/main.js"></script>
 <script>
-    function cancel(x)
-    {
+    function cancel(x) {
         var xy = String(x);
         document.getElementById(xy).style.display = 'none';
         document.getElementById('cancel').style.display = 'block';
@@ -381,21 +399,20 @@
 
 
     }
-    function Reschedule(x)
-    {
+    function Reschedule(x, spid1, srhr1) {
         var xy = String(x);
         document.getElementById(xy).style.display = 'none';
         document.getElementById('Reschedule').style.display = 'block';
         document.getElementById('hiddenserviceid').value = x;
-        
-        
+        document.getElementById('srhr').value = srhr1;
+        document.getElementById('spid').value = spid1;
+
     }
-    function details1(x)
-    {
-        
+    function details1(x) {
+
         document.getElementById(x).style.display = 'block';
         document.getElementById('hiddenserviceid').value = x;
-     
+
     }
     $(document).ready(function () {
         $('div[onload]').trigger('onload');
@@ -417,6 +434,14 @@
 
         });
     }
-   
+
 
 </script>
+@if (TempData["conflict11"] != null)
+{
+    <script>
+
+        document.getElementById('_sucess5').style.display = 'block';
+
+    </script>
+}

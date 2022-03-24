@@ -1,0 +1,437 @@
+﻿@model Helperland.ViewModel.AdminViewModel
+@using Helperland.Models.Data
+@{
+    ViewBag.Title = "Service Request";
+    Layout = "~/Views/Shared/_Layoutadmin.cshtml";
+}
+<section class="container-fluid user_manag">
+    <div class="top-side">
+        <div class="wrap">
+
+            <div class="sidebar">
+                <ul>
+
+                    <li class="active">
+                        <a asp-action="Servicerequests" asp-controller="Home">
+                            Service Requests
+                        </a>
+                    </li>
+
+                    <li >
+                        <a asp-action="Usermanagement" asp-controller="Home">
+                            User Management
+                        </a>
+                    </li>
+
+
+
+                </ul>
+            </div>
+        </div>
+
+
+
+        <div class="secondsidetable">
+            <div class="secondsidetable1">
+                <h2>Service Request</h2>
+            </div>
+            <div class="secondsidetable2">
+                <div>
+
+                    <input class="serviceid" id="serviceid" type="text" name="ServiceId" placeholder="Service Id">
+                    <input id="usrname" placeholder="Customer" class="Customername" list="brow">
+                    <datalist id="brow">
+                       
+                        @foreach (User user in Model.user)
+                        {
+                            if (user.UserTypeId == 1)
+                            {
+                            <option value="@user.FirstName @user.LastName">@user.FirstName @user.LastName</option>}
+                        }
+                    </datalist>
+                    <input id="Spname" placeholder="Service Provider" class="SeriveProviderselect" list="brow1">
+                    <datalist id="brow1">
+                        @foreach (User user in Model.user)
+                        {
+                            if (user.UserTypeId == 2)
+                            {
+                                <option value="@user.FirstName @user.LastName">@user.FirstName @user.LastName</option>}
+}
+                        }
+
+                    </datalist>
+                    <input id="status" placeholder="Status" class="statusselect" list="brow2">
+                    <datalist id="brow2">
+                        <option value="Completed">Completed</option>
+                        <option value="New">New</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Cancelled">Cancelled</option>
+
+                    </datalist>
+                    <input class="dateinput" type="text" name="Fromdate" id="fromdate" placeholder="From Date">
+                    <input class="dateinput" type="text" name="Todate" id="todate" placeholder="To Date">
+
+                    <button type="button" id="searchbtn" class="searchbtn">Search</button>
+                    <button type="button" id="clearbtn" class="clearbtn">Clear</button>
+
+                </div>
+            </div>
+            <div class="secondsidetable3">
+                <table class="datatable" id="tableservicerequest">
+                    <thead>
+                        <tr>
+                            <th>
+                                Service ID
+                            </th>
+                            <th>Service Date</th>
+                            <th>Customer details</th>
+                            <th>Service Provider</th>
+                            <th>Net Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ServiceRequest serviceRequest in Model.serviceRequests)
+                        {
+                            var sp_count = 0;
+                            decimal sp_avg = 0;
+                            var ratingidname = serviceRequest.ServiceRequestId.ToString() + "r2";
+                        <tr>
+                            <td>@serviceRequest.ServiceId</td>
+                            <td><img src="~/img/calculator.png"><strong>@serviceRequest.ServiceStartDate.ToShortDateString()</strong><br><img src="~/img/layer-712.png"><span>@serviceRequest.ServiceStartDate.ToString("HH:mm")-@serviceRequest.ServiceStartDate.AddHours(serviceRequest.ServiceHours).ToString("HH:mm")</span></td>
+                            <td>
+                                @foreach (User user in Model.user)
+                                {
+                                    if (user.UserId == serviceRequest.UserId)
+                                    {
+                                        <span>@user.FirstName @user.LastName</span>
+                                    }
+                                }
+
+                                <br><img src="~/img/layer-719.png">
+                                @foreach (ServiceRequestAddress serviceRequestAddress in Model.serviceRequestAddresses)
+                                {
+                                    if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                    {
+                                        <span>@serviceRequestAddress.AddressLine1,@serviceRequestAddress.AddressLine2</span>
+                                        <br>
+                                        <span>@serviceRequestAddress.PostalCode</span>
+                                        <br>
+                                        <span>@serviceRequestAddress.City</span>
+                                    }
+                                }
+
+
+                            </td>
+
+
+                            @if (serviceRequest.ServiceProviderId != null)
+                            {
+                                <td class="imgtd">
+                                    @foreach (User user in Model.user)
+                                    {
+                                        if (serviceRequest.ServiceProviderId == user.UserId)
+                                        {
+                                            if (user.UserProfilePicture != null)
+                                            {
+                                                <div class=""><img width="60" height="60" src='@user.UserProfilePicture'></div>
+                                            }
+                                            else
+                                            {
+
+                                                <div class=""><img width="60" height="60" src="~/img/avatar-hat.png"></div>
+                                            }
+
+                                        }
+                                    }
+
+                                    <div class="ratename">
+                                        @foreach (User user in Model.user)
+                                        {
+                                            if (serviceRequest.ServiceProviderId == user.UserId)
+                                            {<div class="tdp">@user.FirstName @user.LastName</div>}
+
+                                    }
+
+                                        @foreach (Rating rating in Model.ratings)
+                                        {
+                                            if (serviceRequest.ServiceProviderId == rating.RatingTo)
+                                            {
+                                                sp_count = sp_count + 1;
+                                                sp_avg = sp_avg + rating.Ratings;
+                                            }
+
+                                        }
+                                        @if (sp_count >= 1)
+                                        {
+                                            sp_avg = sp_avg / sp_count;
+                                            sp_avg = Convert.ToDecimal(String.Format("{0:0.00}", sp_avg));
+                                        }
+                                        <div class="ratingtd" onload="avgrating('@ratingidname',@sp_avg)">
+                                            <span id=@ratingidname style="z-index:0;"></span>
+                                            <div class="ratingnum">@sp_avg</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                            <td>$@serviceRequest.TotalCost</td>
+                            @if (serviceRequest.Status == 1)
+                            {
+                                <td class="StatusComplete"><button value="Completed">Completed</button></td>
+                            }
+                            else if (serviceRequest.Status == 2)
+                            {
+                                <td class="Statuscancle"><button value="Cancelled">Cancelled</button></td>
+                            }
+                            else if (serviceRequest.Status == null && serviceRequest.ServiceProviderId != null)
+                            {
+                                <td class="StatusPending"><button value="Pending">Pending</button></td>
+                            }
+                            else
+                            {
+                                <td class="StatusNew"><button value="New">New</button></td>
+                            }
+
+                            @if (serviceRequest.Status == 1 || serviceRequest.Status == 2)
+                            {
+                                <td>
+
+
+                                    <div class="btn-group dropstart">
+                                        <div class="fa fa-ellipsis-v " style="cursor:not-allowed;"></div>
+                                    </div>
+                                </td>
+                            }
+                            else if (serviceRequest.Status == null && serviceRequest.ServiceProviderId != null)
+                            {
+
+                                <td>
+                                    <div class="btn-group dropstart">
+
+                                        <a href="" class="fa fa-ellipsis-v " data-bs-toggle="dropdown" data-bs-display="static"></a>
+                                        <ul class="menuforoption dropdown-menu">
+                                            <li><a class="dropdown-item reshedule" onclick="reschedule('@serviceRequest.ServiceRequestId')">Reschedule</a></li>
+                                            <form asp-action="cancelspfromadmin">
+                                                <input type="hidden" asp-for="Srid" value=@serviceRequest.ServiceRequestId />
+                                                <input type="hidden" asp-for="Srid1" value=@serviceRequest.ServiceId />
+                                                @foreach (User user in Model.user)
+                                                {
+                                                    if (user.UserId == serviceRequest.UserId)
+                                                    {
+                                                        <input type="hidden" asp-for="useremail" value=@user.Email />
+                                                        <input type="hidden" asp-for="username" value=@user.FirstName />
+
+                                                    }
+                                                    if (user.UserId == serviceRequest.ServiceProviderId)
+                                                    {
+                                                        <input type="hidden" asp-for="spemail" value=@user.Email />
+                                                        <input type="hidden" asp-for="spname" value=@user.FirstName />
+                                                    }
+                                                }
+<li><button class="dropdown-item" type="submit">Cancel from SP</button></li>
+                                            </form>
+                                        </ul>
+                                    </div>
+                                </td>
+
+                            }
+                            else if (serviceRequest.Status == null && serviceRequest.ServiceProviderId == null)
+                            {
+                                <td>
+                                    <div class="btn-group dropstart">
+
+                                        <a href="" class="fa fa-ellipsis-v " data-bs-toggle="dropdown" data-bs-display="static"></a>
+                                        <ul class="menuforoption dropdown-menu">
+                                            <li><a class="dropdown-item reshedule" onclick="reschedule('@serviceRequest.ServiceRequestId')">Reschedule</a></li>
+                                            <form asp-action="cancelsrfromadmin">
+                                                <input type="hidden" asp-for="Srid" value=@serviceRequest.ServiceRequestId />
+                                                <input type="hidden" asp-for="Srid1" value=@serviceRequest.ServiceId />
+                                                @foreach (User user in Model.user)
+                                                {
+                                                    if (user.UserId == serviceRequest.UserId)
+                                                    {
+                                                        <input type="hidden" asp-for="useremail" value=@user.Email />
+                                                        <input type="hidden" asp-for="username" value=@user.FirstName />
+
+                                                    }
+                                                    
+                                                }
+<li><button type="submit" class="dropdown-item">Cancel SR by Cust</button></li>
+                                            </form>
+
+                                        </ul>
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+
+
+
+                            <div id=@serviceRequest.ServiceRequestId class="modal">
+
+                                <!-- Modal content -->
+                                <div class="modal-content5">
+                                    <span class="close" onclick="document.getElementById(@serviceRequest.ServiceRequestId).style.display = 'none';"><img src="~/img/close.png"></span>
+                                    <div class="form">
+
+                                        <div class="header">
+                                            Edit Service Request
+                                        </div>
+                                        <form asp-action="updatesradmin">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input formcontrolname="ServiceRequestId" type="hidden" value="10588" class="ng-untouched ng-pristine ng-valid">
+                                            <div class="row">
+                                                <div class="col-sm-6 calculator-date-time edit-date in-modal">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Date</label>
+                                                        <div class="input-wrapper">
+
+                                                            <input class="form-control ng-pristine ng-valid ng-touched" id="txtServiceDate" name="ServiceStartDate" placeholder="DD/MM/YYYY" value=@serviceRequest.ServiceStartDate.ToShortDateString() type="text" readonly="readonly">
+                                                            <input type="hidden" asp-for="date1" value=@serviceRequest.ServiceStartDate.ToShortDateString() />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Time</label>
+                                                        <select asp-for="time1" class="form-select ng-valid ng-touched ng-dirty" formcontrolname="ServiceTime">
+
+                                                            <option selected value=@serviceRequest.ServiceStartDate.ToString("HH:mm")>@serviceRequest.ServiceStartDate.ToString("HH:mm")</option>
+
+                                                            <option value="08:00 am">8:00</option>
+                                                            <option value="08:30 am">8:30</option>
+                                                            <option value="09:00 am">9:00</option>
+                                                            <option value="09:30 am">9:30</option>
+                                                            <option value="10:00 am">10:00</option>
+                                                            <option value="10:30 am">10:30</option>
+                                                            <option value="11:00 am">11:00</option>
+                                                            <option value="11:30 am">11:30</option>
+                                                            <option value="12:00 pm">12:00</option>
+                                                            <option value="12:30 pm">12:30</option>
+                                                            <option value="01:00 pm">13:00</option>
+                                                            <option value="01:30 pm">13:30</option>
+                                                            <option value="02:00 pm">14:00</option>
+                                                            <option value="02:30 pm">14:30</option>
+                                                            <option value="03:00 pm">15:00</option>
+                                                            <option value="03:30 pm">15:30</option>
+                                                            <option value="04:00 pm">16:00</option>
+                                                            <option value="04:30 pm">16:30</option>
+                                                            <option value="05:00 pm">17:00</option>
+                                                            <option value="05:30 pm">17:30</option>
+                                                            <option value="06:00 pm">18:00</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <label class="control-label mt-4">Service Address</label>
+                                            @foreach (ServiceRequestAddress serviceRequestAddress in Model.serviceRequestAddresses)
+                                            {
+                                                if (serviceRequest.ServiceRequestId == serviceRequestAddress.ServiceRequestId)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label normal">Street name</label>
+                                                                <input asp-for="Add1" value=@serviceRequestAddress.AddressLine1 class="form-control ng-pristine ng-valid ng-touched" placeholder="Street name" required>
+                                                                <span asp-validation-for="Add1" class="text-danger"></span>
+                                                                <!---->
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label normal">House number</label>
+                                                                <input asp-for="Add2" value=@serviceRequestAddress.AddressLine2 class="form-control ng-untouched ng-pristine ng-valid" placeholder="House number" required>
+                                                                <span asp-validation-for="Add2" class="text-danger"></span>
+                                                                <!---->
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label normal">Postal code</label>
+                                                                <input asp-for="zipcode" value=@serviceRequestAddress.PostalCode class="form-control ng-dirty ng-valid ng-touched" placeholder="Postal code" required>
+                                                                <!----><span asp-validation-for="zipcode" class="text-danger"></span>
+                                                                <!---->
+                                                                <!---->
+                                                                <!---->
+                                                                <!---->
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label normal">City</label>
+
+                                                                <input asp-for="City" value=@serviceRequestAddress.City class="form-control ng-dirty ng-valid ng-touched" placeholder="City" required>
+                                                                <span asp-validation-for="City" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            <input type="hidden" asp-for="Srid" value=@serviceRequest.ServiceRequestId />
+                                            <input type="hidden" asp-for="Srid1" value=@serviceRequest.ServiceId />
+                                            @foreach (User user in Model.user)
+                                            {
+                                                if (user.UserId == serviceRequest.UserId)
+                                                {
+                                                    <input type="hidden" asp-for="useremail" value=@user.Email />
+                                                    <input type="hidden" asp-for="username" value=@user.FirstName />
+
+                                                }
+                                                if (user.UserId == serviceRequest.ServiceProviderId)
+                                                {
+                                                    <input type="hidden" asp-for="spemail" value=@user.Email />
+                                                    <input type="hidden" asp-for="spname" value=@user.FirstName />
+                                                }
+                                            }
+                                            <button class=" updateadmin" type="submit">Update</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="secondsidetable4">©2018 Helperland. All rights reserved.</div>
+        </div>
+    </div>
+    
+
+</section>
+<script>
+    $(document).ready(function () {
+        $('div[onload]').trigger('onload');
+
+    });
+
+
+
+    function avgrating(id, num) {
+
+        $(document).ready(function () {
+            $("#" + id).rateYo({
+                rating: num,
+                halfStar: true,
+                readOnly: true,
+                starWidth: "20px",
+
+            });
+
+        });
+    }
+    function reschedule(id)
+    {
+        $(document).ready(function () {
+          
+                $('#'+id).show();
+            
+        });
+    }
+</script>

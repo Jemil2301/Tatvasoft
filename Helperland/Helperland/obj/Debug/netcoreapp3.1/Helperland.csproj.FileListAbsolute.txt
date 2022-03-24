@@ -168,3 +168,9 @@ F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\spservicehistory
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\spmyratings.cshtml.g.cs
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\spblockcustomer.cshtml.g.cs
 F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\SPprofile.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Usermanagement.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Layoutadmin.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Servicerequests.cshtml.g.cs
+F:\Training\Helperland\bin\Debug\netcoreapp3.1\MailKit.dll
+F:\Training\Helperland\bin\Debug\netcoreapp3.1\MimeKit.dll
+F:\Training\Helperland\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
