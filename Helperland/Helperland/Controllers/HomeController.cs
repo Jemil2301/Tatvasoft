@@ -335,6 +335,33 @@ namespace Helperland.Controllers
                 _db.SaveChanges();
             }
             ViewBag.serviceid = uid;
+
+            var splist = from user in _db.Users
+                         where user.UserTypeId == 2
+                         && user.ZipCode == model.zipcodeModel.zipcode.ToString()
+                         select user;
+            if (splist.ToList() != null)
+            {
+                foreach (var emailsp in splist)
+                {
+                    var message = new MimeMessage();
+                    message.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+                    message.To.Add(new MailboxAddress(emailsp.FirstName, emailsp.Email));
+                    message.Subject = "New Service Request is Available";
+                    message.Body = new TextPart("plain")
+                    {
+                        Text = "New Service Request " +uid  + " is now available in your area."
+                    };
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("smtp.gmail.com", 587, false);
+                        client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+
+                }
+            }
             return View("bookservice");
         }
 
@@ -425,24 +452,31 @@ namespace Helperland.Controllers
         {
             ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == customerViewModel.
             Cancelrequestid).FirstOrDefault();
-            /*ServiceRequestAddress serviceRequestAddress = _db.ServiceRequestAddresses.Where(x => x.ServiceRequestId == customerViewModel.
-            Cancelrequestid).FirstOrDefault();
-            while (_db.ServiceRequestExtras.Where(x => x.ServiceRequestId == customerViewModel.
-            Cancelrequestid).FirstOrDefault() != null) 
-            {
-              ServiceRequestExtra serviceRequestExtra = _db.ServiceRequestExtras.Where(x => x.ServiceRequestId == customerViewModel.
-            Cancelrequestid).FirstOrDefault();
-                _db.ServiceRequestExtras.Remove(serviceRequestExtra);
+            
+                serviceRequest.Status = 2;
+                _db.ServiceRequests.Update(serviceRequest);
                 _db.SaveChanges();
+            if (serviceRequest.ServiceProviderId > 0) 
+            {
+                User u = _db.Users.Where(x => x.UserId == serviceRequest.ServiceProviderId).FirstOrDefault();
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+                message.To.Add(new MailboxAddress(u.FirstName, u.Email));
+                message.Subject = "Service Request has been Cancelled";
+                message.Body = new TextPart("plain")
+                {
+                    Text = "This Service Request " + serviceRequest.ServiceId + " has been Cancelled by Customer. "
+                };
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                    client.Send(message);
+                    client.Disconnect(true);
+                }
+
+                return RedirectToAction("Dashboard");
             }
-            if (serviceRequestAddress != null)
-            {
-                _db.ServiceRequestAddresses.Remove(serviceRequestAddress);
-                _db.SaveChanges();
-            }*/
-            serviceRequest.Status = 2;
-            _db.ServiceRequests.Update(serviceRequest);
-            _db.SaveChanges();
            
             return RedirectToAction("Dashboard");
 
@@ -499,10 +533,31 @@ namespace Helperland.Controllers
                 if (j == 0)
                 {
                     ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == customerViewModel.
-             Cancelrequestid).FirstOrDefault();
+                    Cancelrequestid).FirstOrDefault();
+                    var spidforemail = serviceRequest.ServiceProviderId;
+                    var serviceidforemail = serviceRequest.ServiceId;
+                    var spemail = from user in _db.Users
+                                  where user.UserId == spidforemail
+                                  select user;
                     serviceRequest.ServiceStartDate = DateTime.Parse(customerViewModel.date + " " + customerViewModel.time);
                     _db.ServiceRequests.Update(serviceRequest);
                     _db.SaveChanges();
+                    var message = new MimeMessage();
+                    message.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+                    message.To.Add(new MailboxAddress(spemail.FirstOrDefault().FirstName, spemail.FirstOrDefault().Email));
+                    message.Subject = "Service Request is Rescheduled";
+                    message.Body = new TextPart("plain")
+                    {
+                        Text = "This Service Request " + serviceidforemail + " is Rescheduled by Customer. "+ "New date and time are"+ DateTime.Parse(customerViewModel.date + " " + customerViewModel.time)
+                    };
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("smtp.gmail.com", 587, false);
+                        client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+
                     return RedirectToAction("Dashboard");
 
                 }
@@ -863,11 +918,41 @@ namespace Helperland.Controllers
                 if (j == 0)
                 {
                     ServiceRequest serviceRequest = _db.ServiceRequests.Where(x => x.ServiceRequestId == model.srid).FirstOrDefault();
+                    var zipcode = serviceRequest.ZipCode;
+                    var serviceidforemail = serviceRequest.ServiceId;
                     serviceRequest.ServiceProviderId = HttpContext.Session.GetInt32("UserId");
                     serviceRequest.SpacceptedDate = DateTime.Now;
                     _db.ServiceRequests.Update(serviceRequest);
                     _db.SaveChanges();
-                    return RedirectToAction("spnewservicerequests");
+                    var splist = from user in _db.Users
+                                 where user.UserTypeId == 2 
+                                 && user.ZipCode == zipcode 
+                                 && user.UserId !=HttpContext.Session.GetInt32("UserId")
+                                 select user;
+                    if (splist.ToList() != null)
+                    {
+                        foreach(var emailsp in splist) 
+                        {
+                            var message = new MimeMessage();
+                            message.From.Add(new MailboxAddress("Test Project", "demoprojectspm@gmail.com"));
+                            message.To.Add(new MailboxAddress(emailsp.FirstName, emailsp.Email));
+                            message.Subject = "Service Request is No More avaliable";
+                            message.Body = new TextPart("plain")
+                            {
+                                Text = "This Service Request "+ serviceidforemail+" is no more available"
+                            };
+                            using (var client = new SmtpClient())
+                            {
+                                client.Connect("smtp.gmail.com", 587, false);
+                                client.Authenticate("demoprojectspm@gmail.com", "jemil12345");
+                                client.Send(message);
+                                client.Disconnect(true);
+                            }
+
+                        }
+                    }
+
+                        return RedirectToAction("spnewservicerequests");
                 }
                 else 
                 {
@@ -1380,15 +1465,68 @@ namespace Helperland.Controllers
             return RedirectToAction("Servicerequests");
 
         }
+        public IActionResult ServiceSchedule() 
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+                return View();
+            }
+            else 
+            {
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult ServiceSchedulesp()
+        {
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
         public bool IsEmailExists(string eMail)
         {
             var IsCheck = _db.Users.Where(email => email.Email == eMail).FirstOrDefault();
             return IsCheck != null;
         }
+      
+        
+        public JsonResult GetEvents()
+        {
+           
+            var events = _db.ServiceRequests.Where(userid => userid.UserId == HttpContext.Session.GetInt32("UserId")).
+                Select(e=>new 
+                {
+                   
+                    title= e.ServiceStartDate.ToString("yyyy-MM-dd"),
+                    start= e.ServiceStartDate.ToString("yyyy-MM-dd"),
+                    description=e.Status
+
+                }).ToList();
+            return new JsonResult(events);
+          
+        }
+        public JsonResult GetEventssp()
+        {
+
+            var events = _db.ServiceRequests.Where(userid => userid.ServiceProviderId == HttpContext.Session.GetInt32("UserId")).
+                Select(e => new
+                {
+
+                    title = e.ServiceStartDate.ToString("yyyy-MM-dd"),
+                    start = e.ServiceStartDate.ToString("yyyy-MM-dd"),
+
+
+                }).ToList();
+            return new JsonResult(events);
+
+        }
 
 
 
-     
 
 
     }

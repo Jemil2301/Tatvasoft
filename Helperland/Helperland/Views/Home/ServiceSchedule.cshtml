@@ -1,0 +1,85 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewBag.Title = "Service Schedule";
+
+}
+<section class="container-fluid name">
+    <p>Welcome, <span>@HttpContextAccessor.HttpContext.Session.GetString("FirstName")!</span></p>
+</section>
+
+<section class="container-fluid top-side">
+
+    <div class="wrapper">
+        <div class="sidebar">
+
+            <ul>
+                <li>
+                    <a asp-action="Dashboard" asp-controller="Home">
+                        Dashbord
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="Servicehistory" asp-controller="Home">
+                        Service History
+                    </a>
+                </li>
+                <li  class="active">
+                    <a asp-action="ServiceSchedule" asp-controller="Home">
+                        Service Schedule
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-action="Favouritepros" asp-controller="Home">
+                        Favourite Pros
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        Invoices
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="">
+                        Notifications
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+    </div>
+
+    <div id="calendar1"></div>
+</section>
+
+<script type="text/javascript" src="~/JS/main.js"></script>
+<script>
+
+    GenerateCalender();
+   
+    function GenerateCalender() {
+            document.addEventListener('DOMContentLoaded', function () {
+
+                var calendarEl = document.getElementById('calendar1');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+
+                    headerToolbar: {
+                        left: 'prev,next title',
+                        center: '',
+                        right: ''
+                    },
+                    events: '@Url.Action("GetEvents","Home")',
+
+
+
+
+                });
+                calendar.render();
+            });
+        }
+
+</script>

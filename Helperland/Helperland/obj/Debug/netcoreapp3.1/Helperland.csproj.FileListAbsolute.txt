@@ -174,3 +174,5 @@ F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\Servicerequests.
 F:\Training\Helperland\bin\Debug\netcoreapp3.1\MailKit.dll
 F:\Training\Helperland\bin\Debug\netcoreapp3.1\MimeKit.dll
 F:\Training\Helperland\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\ServiceSchedule.cshtml.g.cs
+F:\Training\Helperland\obj\Debug\netcoreapp3.1\Razor\Views\Home\ServiceSchedulesp.cshtml.g.cs

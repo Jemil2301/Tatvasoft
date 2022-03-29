@@ -3946,6 +3946,91 @@ hr {
 	.columnAvatar .active {
 		border: 3px solid #1D7A8c;
 	}
+/*Service Schedule*/
+.fc td {
+	background-color: none !important;
+}
+.fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
+	margin-left: 0.75em;
+	float: right!important;
+}
+#calendar1 {
+	width: 900px;
+	margin: 30px;
+}
+
+.fc-daygrid-day-number {
+	color: #646464 !important;
+	font-family: 'Roboto',sans-serif;
+	text-decoration: none !important;
+}
+
+.fc-col-header-cell-cushion {
+	color: #646464 !important;
+	text-decoration: none !important;
+}
+
+.fc-button-primary {
+	background-color: white !important;
+	border: 1px solid #e1e1e1 !important;
+	width: 46px !important;
+	height: 44px !important;
+	padding: 0px !important;
+}
+
+.fc-icon-chevron-right:before {
+	color: #646464 !important;
+}
+
+.fc-icon-chevron-left:before {
+	color: #646464 !important;
+}
+
+.fc-theme-standard th {
+	background-color: #f9f9f9 !important;
+	font-family: 'Roboto',sans-serif;
+	font-weight: normal;
+	font-size: 16px;
+	color: #646464 !important;
+	height: 50px !important;
+	text-align: center;
+	vertical-align: middle;
+}
+
+
+
+.fc .fc-toolbar-title {
+	font-size: 25px !important;
+	font-weight: 400 !important;
+	font-family: 'Roboto',sans-serif !important;
+	color: #646464 !important;
+	margin: 0;
+	line-height: 44px !important;
+}
+fc-event-main {
+	background-color: #1D7A8C !important;
+	border: 0px !important;
+}
+.fc-event-title-container {
+	background-color: #1D7A8C !important;
+	border: 0px !important;
+}
+.fc-event-title {
+	color: white !important;
+	
+}
+
+
+
+
+.disnone {
+	display: none;
+}
+
+
+
+
+
 /*media query*/
 
 @media(max-width: 364px) {
@@ -4209,6 +4294,12 @@ hr {
 
 
 	@media (max-width: 991px) {
+		.disblock {
+			display: none;
+		}
+		.disnone {
+			display: block;
+		}
 		.first-2 img {
 			border: 0px;
 			margin-bottom: 5px;
