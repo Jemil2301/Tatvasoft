@@ -90,7 +90,7 @@
                     var sxp = 0;
                     @foreach (FavoriteAndBlocked favorite1 in Model.favoriteAndBlockeds1)
                     {
-                        if (favorite1.UserId == useridofsp)
+                        if (favorite1.UserId == useridofsp && favorite1.TargetUserId==serviceRequest.UserId)
                         {
                             sxp = 1;
                         }
@@ -101,7 +101,7 @@
                         @foreach (FavoriteAndBlocked favorite in Model.favoriteAndBlockeds1)
                         {
 
-                            if (favorite.TargetUserId == serviceRequest.UserId && favorite.IsBlocked == false)
+                            if (favorite.TargetUserId == serviceRequest.UserId && favorite.IsBlocked != true)
                             {
 
                                 @foreach (FavoriteAndBlocked favoriteAndBlocked in Model.favoriteAndBlockeds)
@@ -439,7 +439,7 @@
                     var sxp = 0;
                     @foreach (FavoriteAndBlocked favorite1 in Model.favoriteAndBlockeds1)
                     {
-                        if (favorite1.UserId == useridofsp)
+                        if (favorite1.UserId == useridofsp && favorite1.TargetUserId == serviceRequest.UserId)
                         {
                             sxp = 1;
                         }
@@ -449,7 +449,7 @@
                     {
                         @foreach (FavoriteAndBlocked favorite in Model.favoriteAndBlockeds1)
                         {
-                            if (favorite.TargetUserId == serviceRequest.UserId && favorite.IsBlocked == false)
+                            if (favorite.TargetUserId == serviceRequest.UserId && favorite.IsBlocked != true)
                             {
 
                                 @foreach (FavoriteAndBlocked favoriteAndBlocked in Model.favoriteAndBlockeds)
